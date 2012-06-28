@@ -11,9 +11,13 @@ class UploadHandlerException extends Exception {
  */
 class UploadHandler
 {
-  
+  const UNLIMITED = -1;
+
+  /**
+   * @var FileManager
+   */
   private $filemgr;
-  
+
 	// ------------------------------------------------------------------------   
   
   /**
@@ -21,7 +25,7 @@ class UploadHandler
    * 
    * @param FileManager $filemgr 
    */
-  public function __construct(FileManager $filemgr) {
+  public function __construct(FileManager $filemgr, $rules = array()) {
     
     $this->filemgr = $filemgr;
     
@@ -30,11 +34,13 @@ class UploadHandler
 	// ------------------------------------------------------------------------   
    
   /**
-   * Determine the max filesize in bytes or return NULL if there is none
+   * Determine the max upload filesize in bytes
+   *
+   * Will return self::UNLIMITED (-1) if there is none
    * 
-   * @return int|null
+   * @return int
    */
-  public function get_upload_max_filesize()
+  public function getUploadMaxFilesize()
   {
     //0 = Unlimited
     $max = 0;
@@ -57,30 +63,32 @@ class UploadHandler
     };
     
 		//Get the max upload filesize
-    $max_vals = array(
+    $maxVals = array(
       'max_upload' => $convertval(ini_get('upload_max_filesize')),
       'max_post'   => $convertval(ini_get('post_max_size')),
       'mem_limit'  => $convertval(ini_get('memory_limit')) 
     );
     
     //Find the actual max of the bunch
-    foreach($max_vals as $val) {
+    foreach($maxVals as $val) {
       
       if ($val > $max) {
         $max = $val;
       }
     }
 		
-    return ($max > 0) ? $max : NULL;
+    return ($max > 0) ? $max : self::UNLIMITED;
   }
   
 	// ------------------------------------------------------------------------   
   
   /**
-   * Process uploads from the  
+   * Process uploads from an array of input files
    * 
    * @param string $path
    * Specify which path to upload files into relative to the Filemgr->basepath
+   *
+   * @return boolean
    */
   public function processUploads($path = '')
   {
@@ -95,7 +103,7 @@ class UploadHandler
     foreach($_FILES as $file) {
   
       //Check extension for allowed extensions
-      
+      //@TODO: THIS!
       
       //Check upload errors
       if ( ! is_uploaded_file($file['tmp_name'])) {
@@ -106,7 +114,7 @@ class UploadHandler
       $this->uploadSecurityFilter($file);
       
       //Move it along into the correct location
-      $this->filemgr->putFile($path, $file['name'], $file['tmp_name'], FileManager::FILE_PATH);
+      return $this->filemgr->putFile($path, $file['name'], $file['tmp_name'], FileManager::PATH);
     }
     
   }

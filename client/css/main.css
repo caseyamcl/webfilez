@@ -112,3 +112,7 @@ body > footer {
   margin: 8px;
   overflow-y: scroll;
 }
+
+#filemgr {
+  padding: 15px;
+}

@@ -4,7 +4,7 @@ $(document).ready(function() {
    * Globals
    */
   debug_mode = true;
-  server_url = 'http://localhost/sandbox/projects/uploader/';
+  server_url = 'http://localhost/webfilez/server/ajax.php';
 
   /*
    * Initial Setup
