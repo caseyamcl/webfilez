@@ -1,6 +1,6 @@
 <?php
 
-require_once('../libs/FileManager/FileManager.php');
+require_once('../FileManager.php');
 
 class FileManagerTest extends PHPUnit_Framework_TestCase {
 

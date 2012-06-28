@@ -181,7 +181,7 @@ class Response
 	 * Set Output
 	 * 
 	 * @param string $output  Filename or actual content, depending on context
-   * @param int $type (CONTENT or FILEPATH)
+     * @param int $type (CONTENT or FILEPATH)
 	 * Typically HTML text, but can be any UTF-8 Text
 	 */
 	public function set_output($output, $type = self::CONTENT)

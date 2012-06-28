@@ -309,7 +309,7 @@ class FileManager
      * @param string $path
      * @return string
      */
-    private function resolveRealPath($path) {
+    public function resolveRealPath($path) {
         return $this->basepath . $this->normalizePath($path);
     }
 

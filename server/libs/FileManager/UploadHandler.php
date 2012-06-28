@@ -134,11 +134,7 @@ class UploadHandler
    * @return object
    */
   public function getUploadStatus($upload_id)
-  { 
-    //Attempt to set the headers to disallow caching for this type of request
-    @header("Cache-Control: no-cache, must-revalidate");
-    @header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-    
+  {     
     //If uplodprogress_get_info exists, we can get progress!
     if (is_callable('uploadprogress_get_info')) {
       

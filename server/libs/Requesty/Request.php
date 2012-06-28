@@ -31,8 +31,8 @@ class Request
 		//Load dependencies
 		$this->browscap = $browscap;
     
-    //Load custom headers
-    $this->http_req_headers = $this->parse_request_headers();
+        //Load custom headers
+        $this->http_req_headers = $this->parse_request_headers();
 	}
 	
 	// --------------------------------------------------------------		
@@ -85,6 +85,13 @@ class Request
       ? $this->http_req_headers[$header_key] : $default;
   }
   
+    // --------------------------------------------------------------       
+
+    public function get_method() {
+        return $_SERVER['REQUEST_METHOD'];
+    }
+    
+
 	// --------------------------------------------------------------		
 	
 	/**

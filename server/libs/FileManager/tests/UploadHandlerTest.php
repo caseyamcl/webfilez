@@ -1,7 +1,7 @@
 <?php
 
-require_once('../libs/FileManager/FileManager.php');
-require_once('../libs/FileManager/UploadHandler.php');
+require_once('../FileManager.php');
+require_once('../UploadHandler.php');
 
 class UploadHandlerTest extends PHPUnit_Framework_TestCase {
 
