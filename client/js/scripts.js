@@ -1,10 +1,11 @@
+
 $(document).ready(function() {
 
   /*
    * Globals
    */
+  //server_url defined in index.php
   debug_mode = true;
-  server_url = 'http://localhost/webfilez/server/ajax.php';
 
   /*
    * Initial Setup
@@ -12,6 +13,7 @@ $(document).ready(function() {
   interface_check_required_elements();
   setup_layout();
   initialize_queue();
+  initialize_filemgr();
   
   
   

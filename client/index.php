@@ -33,7 +33,7 @@
     </section>
     
     <section id="filemgr">
-      <p>File Manager Here</p>
+      <ul id='filelist'><li class='loading'>Loading...</li></ul>
     </section>
     
     
@@ -43,11 +43,13 @@
     <p>Footer - Status Bar</p>
   </footer>
   
+  <?php echo "<script>server_url = 'http://localhost/webfilez/testserver/';</script>"; ?>
   <script src="js/md5.js"></script>
   <script src="js/jquery.js"></script>
   <script src="js/interface.js"></script>
   <script src="js/queuemgr.js"></script>
   <script src="js/queueprocessor.js"></script>
+  <script src="js/filemgr.js"></script>
   <script src="js/scripts.js"></script>
 </body>
 

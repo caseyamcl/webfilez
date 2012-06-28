@@ -40,6 +40,7 @@ function queue_process() {
         success: function(data){
           console.log("Uploaded..." + data);
           queue_clear_current_upload_key();
+          filemgr_get_file_list();
         },
         error: function(jqXHR, errortext) {
           console.log(jqXHR);
