@@ -16,9 +16,6 @@ class FileManager
 {  
     const DATA = 1;
     const PATH = 2;
-
-    const METADATA = 1;
-    const CONTENTS = 2;
   
     /**
      * @var The mode for writing files
@@ -253,6 +250,34 @@ class FileManager
         $info['realpath'] = $fullFilePath;
 
         return $info;
+    }
+
+    // ------------------------------------------------------------------------
+
+    /**
+     * Stream a file to output
+     *
+     * @param string $filepath
+     * @param int $pos
+     */
+    public function streamFile($filepath, $pos = 0) {
+
+        $fullFilePath = $this->resolveRealPath($filepath);
+
+        if ( ! is_readable($fullFilePath)) {
+            throw new FileManagerIOException("The file '$filepath' does not exist or is not readable!");
+        }
+
+        if (is_dir($fullFilePath)) {
+            throw new FileManagerIOException("The file '$filepath' is a directory!");
+        }
+
+        $fh = fopen($fullFilePath, 'r');
+        while ( ! feof($fh)) {
+            echo fread($fh, 8192);
+        }
+
+        fclose($fh);
     }
 
     // ------------------------------------------------------------------------

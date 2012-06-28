@@ -358,6 +358,47 @@ class FileManagerTest extends PHPUnit_Framework_TestCase {
     $this->setExpectedException('FileManagerIOException');
     $obj->putFile('somefile.txt', $testFile, false, FileManager::PATH);
   }
+
+  // --------------------------------------------------------------
+
+  public function testPutFileThrowsExceptionForInavlidMode() {
+    $obj = new FileManager($this->content_path);
+    $testFile = $this->content_path . 'some_content' . DIRECTORY_SEPARATOR . 'nopedoesntexist.php';
+    
+    $this->setExpectedException("InvalidArgumentException");
+    $obj->putFile('somefile.txt', $testFile, false, 3);
+  }
+
+  // --------------------------------------------------------------
+
+  public function testStreamFileProducesOutput() {
+
+      $obj = new FileManager($this->content_path);
+
+      ob_start();
+      $obj->streamFile('some_content/content.php');
+      $result = ob_get_clean();
+
+      $this->assertEquals('<p>Some Content Html</p>', $result);
+  }
+
+  // --------------------------------------------------------------
+
+  public function testStreamFileThrowsExceptionForNonExistentFile() {
+
+    $obj = new FileManager($this->content_path);
+    $this->setExpectedException('FileManagerIOException');
+    $obj->streamFile('doesnotexisttruely');
+  }
+
+  // --------------------------------------------------------------
+
+  public function testStreamFileThrowsExceptinoForDirectory() {
+
+    $obj = new FileManager($this->content_path);
+    $this->setExpectedException('FileManagerIOException');
+    $obj->streamFile('some_content');   
+  }
 }
 
 /* EOF: FileManagerTest.php */
