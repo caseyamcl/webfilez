@@ -1,0 +1,3 @@
+<?php
+
+/* EOF: UploadHandlerTest.php */
