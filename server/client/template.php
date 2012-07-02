@@ -43,7 +43,7 @@
     <p>Footer - Status Bar</p>
   </footer>
   
-  <?php echo "<script>server_url = 'http://localhost/webfilez/testserver/';</script>"; ?>
+  <?php echo "<script>server_url = '{baseurl}/';</script>"; ?>
   <script src="{baseurl}/assets/js/md5.js"></script>
   <script src="{baseurl}/assets/js/jquery.js"></script>
   <script src="{baseurl}/assets/js/interface.js"></script>

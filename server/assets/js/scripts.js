@@ -4,8 +4,14 @@ $(document).ready(function() {
   /*
    * Globals
    */
+
   //server_url defined in index.php
   debug_mode = true;
+
+  //Current directory
+  //@TODO: Make this know if we are looking at a file
+  //  may need to have PHP report this
+  currpath = (window.location.href).substr(server_url.length) + '/';
 
   /*
    * Initial Setup
@@ -15,7 +21,7 @@ $(document).ready(function() {
   initialize_queue();
   initialize_filemgr();
   
-  
+
   
   /*
    * Event handlers

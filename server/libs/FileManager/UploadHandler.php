@@ -8,6 +8,9 @@ class UploadHandlerException extends Exception {
 
 /**
  * Upload Handler Class 
+ *
+ * @TODO: Abstract progress meter into its own class, and implement strategy
+ * pattern here based on if APC is available, SESSION is available, etc.
  */
 class UploadHandler
 {
@@ -16,7 +19,7 @@ class UploadHandler
   /**
    * @var FileManager
    */
-  private $filemgr;
+  private $fileMgr;
 
 	// ------------------------------------------------------------------------   
   
@@ -25,9 +28,13 @@ class UploadHandler
    * 
    * @param FileManager $filemgr 
    */
-  public function __construct(FileManager $filemgr, $rules = array()) {
+  public function __construct(FileManager $fileMgr) {
     
-    $this->filemgr = $filemgr;
+    $this->fileMgr = $fileMgr;
+
+    if ( ! isset($_SESSION['upload_progress'])) {
+        $_SESSION['upload_progress'] = array();
+    }
     
   }
    
@@ -83,44 +90,104 @@ class UploadHandler
 	// ------------------------------------------------------------------------   
   
   /**
-   * Process uploads from an array of input files
-   * 
+   * Process upload from PHP PUT Input Stream
+   *
    * @param string $path
    * Specify which path to upload files into relative to the Filemgr->basepath
    *
+   * @param string $id
+   * A unique alphanumeric ID for the upload
+   *
+   * @param int $contentlength
+   * Content length (in bytes)
+   *
    * @return boolean
    */
-  public function processUploads($path = '')
+  public function processUpload($path, $id, $contentlength)
   {
-    
-    //Check destination
-    $pathinfo = $this->filemgr->get_file_info($path);
-    if ( ! $pathinfo->exists OR ! $pathinfo->is_dir) {
-      throw new UploadHandlerException("Destination Error: Path ($path) does not exist or is not writable!");
-    }
-    
-    //Process the files
-    foreach($_FILES as $file) {
-  
-      //Check extension for allowed extensions
-      //@TODO: THIS!
+      //Check destination by getting the real path, and then trying to put
+      //an empty file in using the FileMgr
+      $path = $this->fileMgr->putFile($path, '', false);
+      $realpath = $this->fileMgr->resolveRealPath($path);
       
-      //Check upload errors
-      if ( ! is_uploaded_file($file['tmp_name'])) {
-        $this->throwUploadError($file['error']);
+      //Set the base file name
+      $filename = basename($realpath);
+
+      //Open the PUT input
+      $indata = fopen('php://input', 'r');
+      $outdata = fopen($realpath, 'a');
+
+      //Prepare the progress meter
+      $this->cleanProgressMeter();
+
+      //Set the progress meter to 0
+      $this->setProgressMeter($id, 0);
+
+      //Read and write
+      $sizewritten = 0;
+      while($chunk = fread($putdata, 8192)) {
+
+        $sizewritten += strlen($chunk);
+        file_put_contents($realpath, $chunk, FILE_APPEND);
+        $this->setProgressMeter($id, $sizewritten);
       }
-      
-      //Process security checks
-      $this->uploadSecurityFilter($file);
-      
-      //Move it along into the correct location
-      return $this->filemgr->putFile($path, $file['name'], $file['tmp_name'], FileManager::PATH);
-    }
-    
+
+      //Clean up
+      fclose($indata);
+      fclose($outdata);
+      unset($chunk);
   }
   
 	// ------------------------------------------------------------------------   
 
+  /**
+   * Set Progress Meter for upload
+   */
+  private function setProgressMeter($id, $amount = 0) {
+  
+      if ( ! isset($_SESSION['upload_progress'][$path])) {
+          $_SESSION['upload_progress'][$id] = array();
+      }
+
+      $_SESSION['upload_progress'][$id]['timestamp'] = time();
+      $_SESSION['upload_progress'][$id]['amount'] = $amount;
+  }
+
+  // ------------------------------------------------------------------------   
+
+  private function getProgressMeter($id) {
+
+      if (isset($_SESSION['upload_progress'][$id])) {
+          return $_SESSION['upload_progress'][$id];
+      }
+      else {
+          return NULL;
+      }
+  }
+
+  // ------------------------------------------------------------------------   
+
+  /**
+   * Clear any progresses out that are older than
+   */
+  private function cleanProgressMeter() {
+
+      $now = time();
+      $tokill = array();
+
+      if (isset($_SESSION['upload_progress'])) {
+          foreach($_SESSION['upload_progress'] as $id => $info) {
+              if (($now - $info['timestamp'] > 30) && (int) $info->amount == 100) {
+                  $tokill[] = "\$_SESSION['upload_progress'][{$id}]";
+              }
+          }
+
+          call_user_func_array('unset', $tokill);
+      }
+  }
+
+  // ------------------------------------------------------------------------   
+  
   /**
    * Get the status for an upload
    * 
@@ -130,35 +197,20 @@ class UploadHandler
    * If not, then it simply returns an object that indicates the progress in
    * in-status
    * 
-   * @param type $upload_id 
+   * @param type $idd 
    * @return object
    */
-  public function getUploadStatus($upload_id)
-  {     
-    //If uplodprogress_get_info exists, we can get progress!
-    if (is_callable('uploadprogress_get_info')) {
-      
-      $info = (object) uploadprogress_get_info($upload_id);
-      
-      if ($info && $info != 'null') {
-        $info->progress_enabled = TRUE;
-        $info->upload_in_progress = TRUE;
-      }
-      else {
-        
-        $info = (object) array(
-          'progress_enabled' => TRUE,
-          'upload_in_progress' => FALSE
-        );
-        
-      }      
+  public function getUploadStatus($id)
+  {   
+    $info = new stdClass;
+
+    if (isset($_SESSION['upload_progress'][$id])) {
+      $info->percent_uploaded = $_SESSION['upload_progress']['amount'];
+      $info->upload_in_progress = ((int) $_SESSION['upload_progress']['amount'] >= 100) ? TRUE : FALSE;
+
     }
     else { //otherwise, we can't get information
-      
-      $info = (object) array(
-        'progress_enabled' => FALSE
-      );
-      
+      $info->upload_in_progress = FALSE;
     }
     
     return $info;

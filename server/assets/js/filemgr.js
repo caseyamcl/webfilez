@@ -5,7 +5,7 @@
 function filemgr_get_file_list() {
 
     $.ajax({
-        url: server_url + 'getfilelist.php',
+        url: server_url + '',
         type: 'GET',
         dataType: 'json',
         cache: false,

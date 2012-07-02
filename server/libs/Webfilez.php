@@ -55,6 +55,9 @@ class Webfilez {
 
         //Error Manager
         Requesty\ErrorWrapper::invoke();
+
+        //Session
+        session_start();
     }
 
     // ------------------------------------------------------------------------
@@ -120,21 +123,21 @@ class Webfilez {
     private function route() {
 
         //Getting upload status? Path: uploadstatus/?id=##
-        if ($this->url->get_segment(0) == 'uploadstatus' && $this->url->get_query_item('id') !== false) {    
+        if ($this->url->get_segment(1) == 'uploadstatus' && $this->url->get_query_item('id') !== false) {    
 
             //Attempt to set the headers to disallow caching for this type of request
             $this->response->set_http_header("Cache-Control: no-cache, must-revalidate");
             $this->response->set_http_header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");  
 
             //Get the data
-            $respData = $this->uploadHandler->getUploadStatus($this->url->get_query_item('id'));
+            $respData = json_encode($this->uploadHandler->getUploadStatus($this->url->get_query_item('id')));
 
             //Set the output
             $this->response->set_output($respData);
         }
 
         //Getting server configuration?  Path: serverconfig/?item=all or ?item=someitem
-        elseif ($this->url->get_segment(0) == 'serverconfig' && $this->url->get_query_item('item') !== false) {
+        elseif ($this->url->get_segment(1) == 'serverconfig' && $this->url->get_query_item('item') !== false) {
             $this->routeServerConfig($this->url->get_query_item('item'));
         }
 
@@ -151,7 +154,7 @@ class Webfilez {
      */
     private function routeFile() {
 
-        $path     = $this->url->get_path_string() ?: '[root]';
+        $path     = $this->url->get_path_string();
         $realpath = $this->fileMgr->resolveRealPath($path);
         $exists   = is_readable($realpath);
         $isDir    = ($exists & is_dir($realpath) OR $this->url->get_query_item('isdir') == true);
@@ -159,11 +162,36 @@ class Webfilez {
         switch($this->request->get_method()) {
 
             case 'PUT':
-                
+
+                //Determine name
+                //Expect either a 'fn' query paramater, or a custom HTTP Header 'UploadFilePath'
+                //LEFT OFF HERE LEFT OFF HERE
+                echo $this->request->get_header('UploadFilePath');
+                die();
+
+                //Determine upload ID
+                //Expect id query parameter or a custom HTTP Header UploadFileId
+
+                //@TODO: Add mechanism to allow for overwrite!
+                if ( ! $exists) {
+                    //$this->uploadHandler->
+                }
+                else {
+                    $this->response->set_http_status();
+                    $this->response->set_output(json_encode(array('msg' => 'File already exists')));
+                }
 
             break;
             case 'POST':
 
+                if ($exists) {
+                    //Get the new name from the input.
+                    //If no match, copy the file using the filePut and then delete the old one
+                }
+                else {
+                    $this->response->set_http_status(404);
+                    $this->response->set_output(json_encode(array('msg' => 'File not found')));
+                }
 
             break;
             case 'DELETE':
@@ -172,12 +200,14 @@ class Webfilez {
             break;
             case 'GET': //GET will be the only method that supports HTML output
             default:
+
                 if ( ! $this->request->is_ajax()) {
                     $this->response->set_output($this->loadInterface());
                 }
                 else {
                     $this->routeGetFile($path, $realpath, $exists, $isDir);
                 }
+
             break;
         }
     }
@@ -238,7 +268,7 @@ class Webfilez {
     private function loadInterface()
     {
         //Set the baseurl variable
-        $baseurl = $this->url->get_base_url_path() . 'client';
+        $baseurl = rtrim($this->url->get_base_url_path(), '/');
 
         //Do the output
         ob_start();
