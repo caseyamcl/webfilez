@@ -128,11 +128,10 @@ class FileManagerTest extends PHPUnit_Framework_TestCase {
 
   public function testResolveRealPathReturnsTheRealPath() {
 
-    $method = new ReflectionMethod('FileManager', 'resolveRealPath');
-    $method->setAccessible(true);
+    $obj = new FileManager($this->content_path);
 
     $expected = $this->content_path . DIRECTORY_SEPARATOR . 'somewhere/to/something';
-    $this->assertEquals($expected, $method->invoke(new FileManager($this->content_path), 'somewhere/to/something'));
+    $this->assertEquals($expected, $obj->resolveRealPath('somewhere/to/something'));
   }
 
   // --------------------------------------------------------------
