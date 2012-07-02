@@ -6,13 +6,13 @@ function filemgr_get_file_list() {
 
     $.ajax({
         url: server_url + 'getfilelist.php',
-        type: 'POST',
+        type: 'GET',
         dataType: 'json',
         cache: false,
         success: function(data) {
             html = '';
             $.each(data, function(k, v) {
-                html = html + "<li>" + v + "</li>";
+                html = html + "<li><span class='name'>" + v + "</span></li>";
             });
 
             $('#filemgr #filelist').html(html);

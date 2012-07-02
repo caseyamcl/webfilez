@@ -5,7 +5,7 @@
   <title>Uploader!</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="{baseurl}/assets/css/main.css" />
 </head>
 
 <body>
@@ -33,7 +33,7 @@
     </section>
     
     <section id="filemgr">
-      <ul id='filelist'><li class='loading'>Loading...</li></ul>
+      <ul id='filelist' class='list'><li class='loading'>Loading...</li></ul>
     </section>
     
     
@@ -44,13 +44,13 @@
   </footer>
   
   <?php echo "<script>server_url = 'http://localhost/webfilez/testserver/';</script>"; ?>
-  <script src="js/md5.js"></script>
-  <script src="js/jquery.js"></script>
-  <script src="js/interface.js"></script>
-  <script src="js/queuemgr.js"></script>
-  <script src="js/queueprocessor.js"></script>
-  <script src="js/filemgr.js"></script>
-  <script src="js/scripts.js"></script>
+  <script src="{baseurl}/assets/js/md5.js"></script>
+  <script src="{baseurl}/assets/js/jquery.js"></script>
+  <script src="{baseurl}/assets/js/interface.js"></script>
+  <script src="{baseurl}/assets/js/queuemgr.js"></script>
+  <script src="{baseurl}/assets/js/queueprocessor.js"></script>
+  <script src="{baseurl}/assets/js/filemgr.js"></script>
+  <script src="{baseurl}/assets/js/scripts.js"></script>
 </body>
 
 </html>

@@ -119,7 +119,7 @@ class Webfilez {
      */
     private function route() {
 
-        //Getting upload status?
+        //Getting upload status? Path: uploadstatus/?id=##
         if ($this->url->get_segment(0) == 'uploadstatus' && $this->url->get_query_item('id') !== false) {    
 
             //Attempt to set the headers to disallow caching for this type of request
@@ -133,17 +133,15 @@ class Webfilez {
             $this->response->set_output($respData);
         }
 
-        //Getting server configuration?
+        //Getting server configuration?  Path: serverconfig/?item=all or ?item=someitem
         elseif ($this->url->get_segment(0) == 'serverconfig' && $this->url->get_query_item('item') !== false) {
-            $respData = $this->getServerConfig($this->url->get_query_item('item'));
+            $this->routeServerConfig($this->url->get_query_item('item'));
         }
 
-        //Default action will be to assume we are getting a resource
+        //Default action will be to assume we are getting a resource (any other path)
         else {
             $respData = $this->routeFile();
         }
-
-        $this->response->set_output($respData);
     }
 
     // ------------------------------------------------------------------------
@@ -161,7 +159,7 @@ class Webfilez {
         switch($this->request->get_method()) {
 
             case 'PUT':
-
+                
 
             break;
             case 'POST':
@@ -174,12 +172,38 @@ class Webfilez {
             break;
             case 'GET': //GET will be the only method that supports HTML output
             default:
-
-
+                if ( ! $this->request->is_ajax()) {
+                    $this->response->set_output($this->loadInterface());
+                }
+                else {
+                    $this->routeGetFile($path, $realpath, $exists, $isDir);
+                }
             break;
         }
+    }
 
-        return $path;
+    // ------------------------------------------------------------------------
+
+    private function routeGetFile($path, $realpath, $exists, $isDir) {
+
+        //Stream the file
+        if ( ! $isDir && $exists && $this->url->get_segment('contents')) {
+            $this->response->set_output($realpath, Requesty\Response::FILEPATH);
+        }
+        elseif ($exists) {
+
+            //Get the object
+            $theObj = ($isDir)
+                ? $this->fileMgr->getDir($path)
+                : $this->fileMgr->getFile($path);
+
+            //Output it
+            $this->response->set_output(json_encode($theObj));
+        }
+        else { //Not exists
+            $this->response->set_http_status(404);
+            $this->response->set_output(json_encode(array('msg' => 'File or folder not found')));
+        }
     }
 
     // ------------------------------------------------------------------------
@@ -189,15 +213,39 @@ class Webfilez {
      *
      * @param string $item
      */
-    private function getServerConfig($item) {
+    private function routeServerConfig($item) {
 
       $config = array('a' => 1, 'b' => 2);
-
-      if ($item = 'all') {
-
+      if ($item == 'all') {
+          $this->response->set_output(json_encode($config));
       }
+      elseif (isset($config[$item])) {
+          $this->response->set_output(json_encode(array($item => $config[$item])));
+      }
+      else {
+          $this->response->set_http_status(404);
+          $this->response->set_output(json_encode(array('msg' => 'Configuration setting not found')));
+      }
+    }
 
-      return $config;
+    // ------------------------------------------------------------------------
+
+    /**
+     * Load the interface HTML to download to a browser
+     *
+     * @return string
+     */
+    private function loadInterface()
+    {
+        //Set the baseurl variable
+        $baseurl = $this->url->get_base_url_path() . 'client';
+
+        //Do the output
+        ob_start();
+        include(BASEPATH . '..' . DIRECTORY_SEPARATOR . 'client' . DIRECTORY_SEPARATOR . 'template.php');
+        $html =  ob_get_clean();
+        $html = str_replace('{baseurl}', $baseurl, $html);
+        return $html;
     }
 
     // ------------------------------------------------------------------------

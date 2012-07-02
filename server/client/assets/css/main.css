@@ -70,6 +70,7 @@ table{
 body {
   font-family: Helvetica, sans-serif;
   font-size: 16px;
+  overflow: hidden;
 }
 
 /* ===== Layout ====== */
@@ -114,5 +115,29 @@ body > footer {
 }
 
 #filemgr {
-  padding: 15px;
+  margin: 0;
+  padding: 0;
+}
+
+#filemgr #filelist.icons > li {
+  float: left;
+  margin: 10px;
+  padding-top: 34px;
+  width: 60px;
+  text-align: center;
+  background-image: url('../img/file_32x32.png');
+  background-position: top center;
+  background-repeat: no-repeat;
+  font-size: 0.9em;
+}
+
+#filemgr #filelist.list > li {
+  float: left;
+  margin: 10px;
+  padding-left: 20px;
+  width: 150px;
+  background-image: url('../img/file_16x16.png');
+  background-position: top left;
+  background-repeat: no-repeat;
+  font-size: 1em;
 }
