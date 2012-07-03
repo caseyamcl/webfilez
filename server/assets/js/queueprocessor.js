@@ -19,46 +19,46 @@ function queue_process() {
 
     //Upload the file    
     $.ajax({
-        url: server_url + upload_path,
-        data: queue_item.fileobject,
-        cache: false,
-        contentType: false,
-        processData: false,
-        type: 'PUT',
-        beforeSend: function(jqXHR, settings) {
-          
-          //Set additional header for upload ID
-          jqXHR.setRequestHeader("UploadFileId", queue_item.key);
+      url: server_url + upload_path,
+      data: queue_item.fileobject,
+      cache: false,
+      contentType: false,
+      processData: false,
+      type: 'PUT',
+      beforeSend: function(jqXHR, settings) {
+        
+        //Set additional header for upload ID
+        jqXHR.setRequestHeader("UploadFileId", queue_item.key);
 
-          //Show a message
-          interface_show('current_upload_filename');
-          interface_update_content('current_upload_filename', 'Uploading ' + queue_item.fileobject.name);
-          
-          //Set a flag to indicate the current uploading file
-          queue_set_current_upload_key(queue_item.key);
-          
-          //Start the progress meter
-          queue_do_progress(queue_item.key);
-        },
-        success: function(data){
-          console.log("Uploaded..." + data);
-          queue_clear_current_upload_key();
-          filemgr_get_file_list();
-        },
-        error: function(jqXHR, errortext) {
-          console.log(jqXHR);
-          console.log(errortext);
-          queue_clear_current_upload_key();
-        },
-        complete: function(jqXHR, textStatus) {
-          
-          //Revert message
-          interface_update_content('current_upload_filename', 'No Uploads in Progress');
-          interface_hide('current_upload_filename');
-          
-          //Recursive callback
-          queue_process();
-        }
+        //Show a message
+        interface_show('current_upload_filename');
+        interface_update_content('current_upload_filename', 'Uploading ' + queue_item.fileobject.name);
+        
+        //Set a flag to indicate the current uploading file
+        queue_set_current_upload_key(queue_item.key);
+        
+        //Start the progress meter
+        queue_do_progress(queue_item.key);
+      },
+      success: function(data){
+        console.log("Uploaded..." + data);
+        queue_clear_current_upload_key();
+        filemgr_get_file_list();
+      },
+      error: function(jqXHR, errortext) {
+        console.log(jqXHR);
+        console.log(errortext);
+        queue_clear_current_upload_key();
+      },
+      complete: function(jqXHR, textStatus) {
+        
+        //Revert message
+        interface_update_content('current_upload_filename', 'No Uploads in Progress');
+        interface_hide('current_upload_filename');
+        
+        //Recursive callback
+        queue_process();
+      }
     });    
         
   }
@@ -75,27 +75,31 @@ function queue_process() {
 function queue_do_progress(upload_id) {
   
   if (queue_get_current_upload_key() == upload_id) {
-  
-    var url = server_url + 'uploadstatus?id=' + upload_id;
 
-    $.getJSON(url, function(data) {
+    $.ajax({
+      url: server_url + 'uploadstatus',
+      type: 'GET',
+      data: {'id': upload_id},
+      success: function(data) {
       
-      var curr_prog;
-    
-      if (typeof data.noprogress != 'undefined') {
-        curr_prog = 'Working...'; //This is the response the server sends if there is no progress functionality installed
-      }
-      else if (typeof data.bytes_total != 'undefined') {
-        curr_prog = Math.floor(data.percent_uploaded);
-      }
-      else {
-        curr_prog = 0;
-      }
-            
-      $('#current_upload_status').html("<progress max='100' value='" + curr_prog + "' />");
-      debug("Progress: " + curr_prog);
+        var curr_prog;
       
-    });
+        //This is the response the server sends if there
+        //is no progress functionality installed
+        if (typeof data.noprogress != 'undefined') {
+          curr_prog = 'Working...';
+        }
+        else if (typeof data.percent_uploaded != 'undefined') {
+          curr_prog = Math.floor(data.percent_uploaded);
+        }
+        else {
+          curr_prog = 0;
+        }
+              
+        $('#current_upload_status').html("<progress max='100' value='" + curr_prog + "' />");
+        debug("Progress: " + curr_prog);
+      }
+    })
 
     var caller = "queue_do_progress('" + upload_id + "')";
     setTimeout(caller, 750);

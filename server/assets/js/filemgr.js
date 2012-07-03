@@ -5,10 +5,9 @@
 function filemgr_get_file_list() {
 
     $.ajax({
-        url: server_url + '',
+        url: server_url,
         type: 'GET',
         dataType: 'json',
-        cache: false,
         success: function(data) {
             html = '';
             $.each(data, function(k, v) {

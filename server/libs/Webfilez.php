@@ -125,8 +125,8 @@ class Webfilez {
      */
     private function route() {
 
-        //Getting upload status? Path: uploadstatus/?id=##
-        if ($this->url->get_segment(1) == 'uploadstatus' && $this->url->get_query_item('id') !== false) {    
+        //Getting upload status? Path: uploadstatus?id=##
+        if ($this->url->get_segment(1) == 'uploadstatus' && $this->url->get_query_item('id') !== false) {
 
             //Attempt to set the headers to disallow caching for this type of request
             $this->response->set_http_header("Cache-Control: no-cache, must-revalidate");
@@ -139,7 +139,7 @@ class Webfilez {
             $this->response->set_output($respData);
         }
 
-        //Getting server configuration?  Path: serverconfig/?item=all or ?item=someitem
+        //Getting server configuration?  Path: serverconfig?item=all or ?item=someitem
         elseif ($this->url->get_segment(1) == 'serverconfig' && $this->url->get_query_item('item') !== false) {
             $this->routeServerConfig($this->url->get_query_item('item'));
         }
@@ -166,18 +166,13 @@ class Webfilez {
 
             case 'PUT':
 
-                //Determine name
-                //Expect either a 'fn' query paramater, or a custom HTTP Header 'UploadFilePath'
-                //LEFT OFF HERE LEFT OFF HERE
-                echo $this->request->get_header('UploadFilePath');
-                die();
-
-                //Determine upload ID
-                //Expect id query parameter or a custom HTTP Header UploadFileId
+                //Determine upload ID - Try header first, then query array
+                $fileUploadID = $this->request->get_header('Uploadfileid') ?: $this->request->get_query_item('id');
 
                 //@TODO: Add mechanism to allow for overwrite!
                 if ( ! $exists) {
-                    //$this->uploadHandler->
+                    $output = $this->uploadHandler->processUpload($path, $_SERVER['CONTENT_LENGTH'], $fileUploadID);
+                    $this->response->set_output(json_encode($output));
                 }
                 else {
                     $this->response->set_http_status();

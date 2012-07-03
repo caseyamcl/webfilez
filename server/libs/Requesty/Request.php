@@ -71,20 +71,27 @@ class Request
 		return (float) $this->get_user_agent()->Version;
 	}
 
-	// --------------------------------------------------------------		
+    // --------------------------------------------------------------		
   
-  /**
-   * Get the request header or the default (if the header is not set)
-   * 
-   * @param string $header_key 
-   * @return string|null
-   */
-  public function get_header($header_key, $default = NULL) {
+    /**
+     * Get the request header or the default (if the header is not set)
+     * 
+     * @param string $header_key 
+     * @return string|null
+     */
+    public function get_header($header_key, $default = NULL) {
     
-    return (isset($this->http_req_headers[$header_key]))
-      ? $this->http_req_headers[$header_key] : $default;
-  }
+        return (isset($this->http_req_headers[$header_key]))
+            ? $this->http_req_headers[$header_key] : $default;
+    }
   
+    // --------------------------------------------------------------       
+
+    public function get_headers()
+    {
+        return $this->http_req_headers;
+    }
+
     // --------------------------------------------------------------       
 
     public function get_method() {
