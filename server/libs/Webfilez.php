@@ -92,6 +92,9 @@ class Webfilez {
     private function loadLibraries()
     {
         //First Tier
+        $configdir = BASEPATH . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR;
+        $this->config = new Configula\Config($configdir);
+
         $cachedir = sys_Get_temp_dir();
         $this->request = new Requesty\Request(new Browscap($cachedir));
 
@@ -99,7 +102,7 @@ class Webfilez {
         $this->url = new Requesty\Uri();
 
         //Second Tier
-        $this->fileMgr = new FileManager($this->getFolder());
+        $this->fileMgr = new FileManager($this->getFolder(), array(), (boolean) $this->config->autobuild);
         $this->uploadHandler = new UploadHandler($this->fileMgr);
     }
 
