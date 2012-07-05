@@ -237,11 +237,14 @@ body > footer a {
   font-size: 1em;
 }
 
-
 #filemgr #filelist.list > li.file {
   background-image: url('../img/file_16x16.png');
 } 
 
 #filemgr #filelist.list li.dir {
     background-image: url('../img/folder_16x16.png');
+}
+
+#filemgr #filedetails {
+  margin: 20px 10px 10px 30px;
 }

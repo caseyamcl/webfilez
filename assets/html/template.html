@@ -27,6 +27,7 @@
    * Available Template Tags:
    *  {baseurl}     -- Base URL of the application
    *  {currentpath} -- Current path
+   *  {currenttype} -- Current path item type ('file' or 'dir')
    */ 
 ?>
 <!doctype html>
@@ -73,7 +74,8 @@
         </div>
       </div>
 
-      <ul id='filelist' class='icons'><li class='loading'>Loading...</li></ul>
+      <ul id='filelist' class='icons' style='display: none;'><li class='loading'>Loading...</li></ul>
+      <div id='filedetails' style='display: none;'>No File Loaded</div>
     </section>
         
   </div>
