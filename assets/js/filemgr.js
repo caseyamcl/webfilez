@@ -23,7 +23,7 @@ function filemgr_get_file_list() {
 }
 
 function build_breadcrumbs() {
-    var sections = current_path.split('/');
+    var sections = current_path.split('/').clean();
     var first = $('#breadcrumbs > li.home').html();
 
     var output = sprintf("<li class='home'><a href='%s' title='Home'>Home</a></li>", server_url);

@@ -31,6 +31,7 @@ $(document).ready(function() {
   $(window).resize(setup_layout);
   
   //Drag files over queue
+  $('body').bind('dragenter dragover dragexit drop', function(e) { e.preventDefault(); });
   $('#upload_queue').bind('dragenter', queue_drag_handler);
   $('#upload_queue').bind('dragover', queue_drag_handler);
   $('#upload_queue').bind('dragexit', queue_dragexit_handler);
@@ -78,6 +79,28 @@ function debug(item) {
     console.log(item);
   }
 } 
+
+// -----------------------------------------------------------------------------
+
+/**
+ * Helper function to clean empty array items
+ * From: http://stackoverflow.com/questions/281264/remove-empty-elements-from-an-array-in-javascript
+ * Slight modification by Casey McL
+ */
+Array.prototype.clean = function(deleteValue) {
+
+  if (typeof deleteValue == 'undefined') {
+    deleteValue = '';
+  }
+
+  for (var i = 0; i < this.length; i++) {
+    if (this[i] == deleteValue) {         
+      this.splice(i, 1);
+      i--;
+    }
+  }
+  return this;
+};
 
 // -----------------------------------------------------------------------------
 

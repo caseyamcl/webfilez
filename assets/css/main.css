@@ -144,17 +144,32 @@ body > footer {
   padding: 0;
 }
 
-#filemgr #breadcrumbs {
+#filemgr .breadcrumbpanel {
   display: block;
   width: 98%;
-  margin: auto;
-  padding: 10px 0;
+  margin: 0 auto;
+  padding: 0;
+}
+
+#filemgr #breadcrumbs {
+  margin: 10px;
+  width: 98%;
+  background-color: #CCC;
+  padding: 10px 15px;
+  border-radius: 10px;
 }
 
 #filemgr #breadcrumbs > li {
   display: block;
   float: left;
 }
+
+#filemgr #breadcrumbs > li.sep {
+  font-weight: bold;
+  font-size: 1.2em;
+  margin: 0 8px;
+}
+
 
 #filemgr #filelist.icons > li {
   float: left;

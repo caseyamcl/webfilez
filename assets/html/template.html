@@ -3,7 +3,7 @@
    *
    * Note: This file is not a script file; it is a template file.
    * Anything between <? ... tags will actually be ignored, and
-   * is here for comments/documentation purposes only
+   * is here for documentation purposes only
    *
    * Expected Elements with IDs:
    *   'uploader'                  (bl)
@@ -65,9 +65,11 @@
     
     <section id="filemgr">
 
-      <ul id='breadcrumbs'>
-        <li class='home'><a href='{baseurl}' title='Home (root folder)'>Home</a></li>
-      </ul>
+      <div class='breadcrumbpanel'>
+        <ul id='breadcrumbs' class='clearfix'>
+          <li class='home'><a href='{baseurl}' title='Home (root folder)'>Home</a></li>
+        </ul>
+      </div>
 
       <ul id='filelist' class='icons'><li class='loading'>Loading...</li></ul>
 
