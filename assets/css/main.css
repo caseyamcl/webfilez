@@ -123,12 +123,12 @@ body > footer {
   float: left;
   margin: 10px;
   padding-top: 34px;
-  width: 60px;
+  width: 120px;
   text-align: center;
   background-image: url('../img/file_32x32.png');
   background-position: top center;
   background-repeat: no-repeat;
-  font-size: 0.9em;
+  font-size: 0.8em;
 }
 
 #filemgr #filelist.list > li {

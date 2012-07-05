@@ -11,12 +11,38 @@ function filemgr_get_file_list() {
         success: function(data) {
             html = '';
             $.each(data, function(k, v) {
-                html = html + "<li><span class='name'>" + k + "</span></li>";
+                html = html + "<li title='" + k + "'><span class='name'>" + filemgr_prep_filename(k) + "</span></li>";
             });
 
             $('#filemgr #filelist').html(html);
         }
     });
+
+}
+
+function filemgr_prep_filename(fname, limit) {
+
+    if (typeof limit == 'undefined') {
+        limit = 20;
+    }
+
+    if (fname.length > limit) {
+
+        //If extension
+        if (fname.lastIndexOf('.') != -1) {
+
+            basename = fname.slice(0, fname.lastIndexOf('.') - 1);
+            extension = fname.slice(fname.lastIndexOf('.'));
+            limit = limit - extension.length;
+            fname = basename.substr(0, limit-1) + '.' + extension + '&hellip;';
+        }
+        else {
+            fname = fname.substr(0, limit-1) + '&hellip;';
+        }
+
+    }
+
+    return fname;
 
 }
 
