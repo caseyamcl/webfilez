@@ -290,9 +290,8 @@ class Webfilez {
         $baseurl = rtrim($this->url->get_base_url_path(), '/');
 
         //Do the output
-        ob_start();
-        include(BASEPATH . '..' . DIRECTORY_SEPARATOR . 'client' . DIRECTORY_SEPARATOR . 'template.php');
-        $html =  ob_get_clean();
+        $ds = DIRECTORY_SEPARATOR;
+        $html =  file_get_contents(BASEPATH . "..{$ds}assets{$ds}html{$ds}template.html");
         $html = str_replace('{baseurl}', $baseurl, $html);
         return $html;
     }
