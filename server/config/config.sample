@@ -6,19 +6,37 @@
  * Copy config.sample.php to config.php!
  */
 
-/**
+/*
  * Autobuild Paths?
  *
  * Will attempt to create directories if they
  * don't already exist
  */
-$config['autobuild'] = TRUE;
+$config['autobuild'] = true;
 
-/**
+/*
  * For debugging purposes; if slow is equal to true,
  * then uploading will happen very slowly.  Keep off
  * for production!
  */
-$config['slow'] = FALSE;
+$config['slow'] = false;
+
+/*
+ * Get Folder Callback
+ *
+ * 'foldercallback' is required and should return
+ * either a string with the realpath to the foldername,
+ * or a WebfilezNotAuthorizedException
+ *
+ * 'foldercallbackfile' is not required.  If included,
+ * Webfilez will attempt to include the file with a require()
+ * statement.  If you autoload, or have already required the
+ * file by the time Webfilez is executed, this is unnecessary
+ *
+ * For more details, see documentation.
+ *
+ */
+$config['foldercallback']     = '';
+$config['foldercallbackfile'] = '';
 
 /* EOF: config.php */

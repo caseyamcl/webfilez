@@ -117,18 +117,27 @@ class Webfilez {
 
         //Second Tier
         $this->fileMgr = new FileManager($this->getFolder(), array(), (boolean) $this->config->autobuild);
-        $this->uploadHandler = new UploadHandler($this->fileMgr);
+        $this->uploadHandler = new UploadHandler($this->fileMgr, $this->config->slow);
     }
 
     // ------------------------------------------------------------------------
 
     /**
      * Callback to get the folder
+     *
+     * @return string
      */
     private function getFolder()
     {
-        //@TODO - Make this actually work by calling a callback!
-        return '/tmp/webfileztest';
+        if ($this->config->foldercallbackfile) {
+            include_once($this->config->foldercallbackfile);
+        }
+
+        if ( ! $this->config->foldercallback) {
+            throw new Exception("Folder Callback undefined!  Did you set it in the configuration?");
+        }
+
+        return call_user_func($this->config->foldercallback);
     }
 
     // ------------------------------------------------------------------------

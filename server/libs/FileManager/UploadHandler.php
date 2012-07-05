@@ -23,16 +23,23 @@ class UploadHandler
      */
     private $progress;
 
+    /**
+     * @var boolean
+     */
+    private $slow = false;
+
     // ------------------------------------------------------------------------   
     
     /**
      * Constructor
      * 
      * @param FileManager $filemgr 
+     * @param boolean $slow
      */
-    public function __construct(FileManager $fileMgr)
+    public function __construct(FileManager $fileMgr, $slow = false)
     {    
         $this->fileMgr = $fileMgr;
+        $this->slow = $slow;
 
         //Load Libraries (Autoload?)
         $ds = __DIR__ . DIRECTORY_SEPARATOR . 'ProgressStrategies' . DIRECTORY_SEPARATOR;
@@ -141,8 +148,10 @@ class UploadHandler
                         $this->progress->setProgress($id, $contentlength, $sizewritten);
                     }
 
-                    //Test - DELETE ME
-                    sleep(2);
+                    //Go slow for debuggging?
+                    if ($this->slow) {
+                        sleep(2);
+                    }
             }
 
             //Clean up
