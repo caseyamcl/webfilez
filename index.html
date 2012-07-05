@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Webfilez by caseyamcl</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Webfilez</h1>
+        <p class="header">A Javascript / PHP HTTP File Manager</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/caseyamcl/webfilez/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/caseyamcl/webfilez/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/caseyamcl/webfilez">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/caseyamcl">caseyamcl</a></p>
+
+
+      </header>
+      <section>
+        <h3>About</h3>
+
+<p>Webfilez is a point-and-click, drag-and-drop file manager written in PHP and Javascript.  It provides an easy-to-use interface for people to interact with files on a website.</p>
+
+<h3>Features</h3>
+
+<ul>
+<li>Queued uploads with drag-and-drop capabilities</li>
+<li>Loosely-coupled (can replace server-side PHP with Python, C#, etc.)</li>
+<li>Portable PHP code (runs on any 5.3 server)</li>
+<li>Hooks into any PHP application with minimal effort</li>
+<li>Easy-to-change look-and-feel through a single CSS stylesheet</li>
+<li>Fully RESTful server-side interface</li>
+</ul><h3>How it Works</h3>
+
+<p>Webfilez is a self-contained application that can reside anywhere in your webserver, or in your application  directory structure.  It requires PHP5.3, and works on all modern browsers.  It relies on a single API hook to determine what server folder to display to the user.  This can be a single folder for all users, or a separate folder per user account.</p>
+
+<h3>Installation</h3>
+
+<ol>
+<li>Copy the Webfilez/server folder from this repository onto your PHP5.3</li>
+<li>Copy the config.sample.php to config.local.php, and change the settings</li>
+<li>In particular, define a directory hook function.  You'll need to specify both the file and the function callback name, which is a standard PHP callback.  If you know that the file will already be loaded </li>
+<li>Implement the callback in your code (see below).</li>
+</ol><h3>The folder callback function</h3>
+
+<p>To implement the folder callback, simply create a function that will return a string to the realpath or relative path of a directory on the system.  The directory doesn't have to exist already, but its parent directory must be writable.</p>
+
+<p>For example, let's assume there is a folder on the server already named {/userdata}, and you want each user to have a folder under that with their username (e.g. 'bob', 'mary', etc).  The application will create the user's folder if it doesn't already exist.  Your callback function may look something like this:</p>
+
+<div class="highlight">
+<pre><span class="x">function getUserFolder() {</span>
+
+<span class="x">  //Check if logged in.  If not, throw a WebfilezNotAuthorizedException</span>
+<span class="x">  if ( ! isset($_SESSION['username']) {</span>
+<span class="x">    throw new WebfilezNotAuthorizedException("You are not logged in!");</span>
+<span class="x">  }</span>
+
+<span class="x">  //Get the name of the folder based on the username</span>
+<span class="x">  $foldername = $_SESSION['username'];</span>
+
+<span class="x">  return $foldername;</span>
+<span class="x">}</span>
+</pre>
+</div>
+
+
+<p>If you put this function in a file called <em>myAppGetUser.php</em>, you would set the Webfilez configuration settings as follows:</p>
+
+<div class="highlight">
+<pre><span class="x">$config['foldercallbackfile'] = '/var/www/path/to/app/myAppGetUser.php';</span>
+<span class="x">$config['foldercallback'] = 'getUserFolder'; //this is a standard PHP callback</span>
+</pre>
+</div>
+
+
+<p>Test, and you're good to go!</p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+		
+  </body>
+</html>
