@@ -12,5 +12,11 @@
  */
 $config['autobuild'] = TRUE;
 
+/**
+ * For debugging purposes; if slow is equal to true,
+ * then uploading will happen very slowly.  Keep off
+ * for production!
+ */
+$config['slow'] = TRUE;
 
 /* EOF: config.php */
