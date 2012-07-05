@@ -1,5 +1,12 @@
 <?php
 
+class WebfilezNotAuthorizedException
+{
+    /* pass */
+}
+   
+// ------------------------------------------------------------------------
+   
 /**
  * Webfilez Main Execution Class
  */
@@ -55,9 +62,6 @@ class Webfilez {
 
         //Error Manager
         Requesty\ErrorWrapper::invoke();
-
-        //Session
-        session_start();
     }
 
     // ------------------------------------------------------------------------
@@ -74,6 +78,16 @@ class Webfilez {
 
             $this->route();
             $this->response->go();
+        }
+        catch (WebfilezNotAuthorizedException $e) {
+            $this->response->set_http_status('401');
+
+            if ($this->request->is_ajax()) {
+                $this->response->set_output(json_encode(array('msg' => 'Not Authorized')));
+            }
+            else {
+                $this->request->set_output("Not Authorized");
+            }
         }
         catch (Exception $e) {
 
@@ -114,7 +128,6 @@ class Webfilez {
     private function getFolder()
     {
         //@TODO - Make this actually work by calling a callback!
-        //SET OUTPUT STATUS TO 401 if get back FALSE (folder not exist or unauthorized)
         return '/tmp/webfileztest';
     }
 
@@ -134,7 +147,7 @@ class Webfilez {
 
             //Get the data
             $respData = json_encode($this->uploadHandler->getUploadStatus($this->url->get_query_item('id')));
-
+            
             //Set the output
             $this->response->set_output($respData);
         }

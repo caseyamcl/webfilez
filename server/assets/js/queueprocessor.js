@@ -80,6 +80,7 @@ function queue_do_progress(upload_id) {
       url: server_url + 'uploadstatus',
       type: 'GET',
       data: {'id': upload_id},
+      dataType: 'json',
       success: function(data) {
       
         var curr_prog;
@@ -89,8 +90,8 @@ function queue_do_progress(upload_id) {
         if (typeof data.noprogress != 'undefined') {
           curr_prog = 'Working...';
         }
-        else if (typeof data.percent_uploaded != 'undefined') {
-          curr_prog = Math.floor(data.percent_uploaded);
+        else if (typeof data.percent != 'undefined') {
+          curr_prog = (Math.floor(data.percent * 100)) ;
         }
         else {
           curr_prog = 0;

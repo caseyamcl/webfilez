@@ -8,9 +8,6 @@ class UploadHandlerException extends Exception {
 
 /**
  * Upload Handler Class 
- *
- * @TODO: Abstract progress meter into its own class, and implement strategy
- * pattern here based on if APC is available, SESSION is available, etc.
  */
 class UploadHandler
 {
@@ -20,6 +17,11 @@ class UploadHandler
      * @var FileManager
      */
     private $fileMgr;
+
+    /**
+     * @var ProgressStrategyInterface
+     */
+    private $progress;
 
     // ------------------------------------------------------------------------   
     
@@ -32,10 +34,13 @@ class UploadHandler
     {    
         $this->fileMgr = $fileMgr;
 
-        if ( ! isset($_SESSION['upload_progress'])) {
-                $_SESSION['upload_progress'] = array();
-        }
-        
+        //Load Libraries (Autoload?)
+        $ds = __DIR__ . DIRECTORY_SEPARATOR . 'ProgressStrategies' . DIRECTORY_SEPARATOR;
+        require_once($ds . 'ProgressStrategyInterface.php');
+        require_once($ds . 'FileProgressStrategy.php');
+
+        //Load progress interface
+        $this->progress = $this->setProgressStrategy();
     }
      
     // ------------------------------------------------------------------------   
@@ -117,12 +122,12 @@ class UploadHandler
             $indata = fopen('php://input', 'r');
             $outdata = fopen($realpath, 'a');
 
-            //Prepare the progress meter
-            $this->cleanProgressMeter();
+            //Clean the progress meter
+            $this->progress->clean();
 
             //Set the progress meter to 0
             if ($id) {
-                    $this->setProgressMeter($id, $contentlength, 0);
+                    $this->progress->setProgress($id, $contentlength, 0);
             }
 
             //Read and write
@@ -133,7 +138,7 @@ class UploadHandler
                     file_put_contents($realpath, $chunk, FILE_APPEND);
 
                     if ($id) {
-                        $this->setProgressMeter($id, $contentlength, $sizewritten);
+                        $this->progress->setProgress($id, $contentlength, $sizewritten);
                     }
 
                     //Test - DELETE ME
@@ -144,58 +149,6 @@ class UploadHandler
             fclose($indata);
             fclose($outdata);
             unset($chunk);
-    }
-    
-    // ------------------------------------------------------------------------   
-
-    /**
-     * Set Progress Meter for Upload
-     */
-    private function setProgressMeter($id, $total, $amount = 0)
-    {
-            if ( ! isset($_SESSION['upload_progress'][$id])) {
-                $_SESSION['upload_progress'][$id] = array();
-            }
-
-            $_SESSION['upload_progress'][$id]['total'] = $total;
-            $_SESSION['upload_progress'][$id]['timestamp'] = time();
-            $_SESSION['upload_progress'][$id]['amount'] = $amount;
-    }
-
-    // ------------------------------------------------------------------------   
-
-    /**
-     * Get Progress Meter for Upload
-     *
-     * @param string $id
-     */
-    private function getProgressMeter($id)
-    {
-            if (isset($_SESSION['upload_progress'][$id])) {
-                return $_SESSION['upload_progress'][$id];
-            }
-            else {
-                return NULL;
-            }
-    }
-
-    // ------------------------------------------------------------------------   
-
-    /**
-     * Clear any progresses out that are older than
-     */
-    private function cleanProgressMeter()
-    {
-            $now = time();
-            $tokill = array();
-
-            if (isset($_SESSION['upload_progress'])) {
-                    foreach($_SESSION['upload_progress'] as $id => $info) {
-                            if (($now - $info['timestamp'] > 30) && (int) $info['amount'] == 100) {
-                                    unset($_SESSION['upload_progress'][$id]);
-                            }
-                    }
-            }
     }
 
     // ------------------------------------------------------------------------   
@@ -214,16 +167,11 @@ class UploadHandler
      */
     public function getUploadStatus($id)
     {   
-        $info = new stdClass;
+        $info = $this->progress->getProgress($id);
 
-        if (isset($_SESSION['upload_progress'][$id])) {
-            
-            $uprog = $_SESSION['upload_progress'][$id];
-            $info->percent_uploaded = $uprog['amount'] / $uprog['total'];
-            $info->upload_in_progress = ((int) $info->percent_uploaded >= 100);
-        }
-        else { //otherwise, we can't get information
-            $info->noprogress = TRUE;
+        //If can't find info...
+        if ( ! $info) { 
+            $info = (object) array('noprogress' => true);
         }
         
         return $info;
@@ -244,8 +192,31 @@ class UploadHandler
         return TRUE;    
     }
     
-    // ------------------------------------------------------------------------   
+    // ------------------------------------------------------------------------
 
+    /**
+     * Set the progress meter strategy either manually or automatically
+     *
+     * @param string $strategy
+     * @return ProgressStrategyInterface
+     */
+    private function setProgressStrategy($strategy = NULL)
+    {
+        //Determine strategy based on functionality
+        if (is_null($strategy)) {
+
+            //@TODO: Add strategies and decisions here!
+            $strategy = 'FileProgressStrategy';
+        }
+
+        if ( ! class_exists($strategy)) {
+            throw new Exception("Progress strategy {$strategy} does not exist");
+        }
+
+        return new $strategy;
+    }
+
+    // ------------------------------------------------------------------------   
     /**
      * Throw Upload Error
      *
