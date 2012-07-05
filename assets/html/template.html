@@ -33,7 +33,13 @@
     </section>
     
     <section id="filemgr">
+
+      <ul id='breadcrumbs'>
+        <li class='home'><a href='{baseurl}' title='Home (root folder)'>Home</a></li>
+      </ul>
+
       <ul id='filelist' class='icons'><li class='loading'>Loading...</li></ul>
+
     </section>
     
     
@@ -44,8 +50,10 @@
   </footer>
   
   <script>
-    server_url = '{baseurl}/';
+    server_url   = '{baseurl}/';
+    current_path = '{currentpath}';
   </script>
+  <script src="{baseurl}/assets/js/sprintf.js"></script>
   <script src="{baseurl}/assets/js/md5.js"></script>
   <script src="{baseurl}/assets/js/jquery.js"></script>
   <script src="{baseurl}/assets/js/interface.js"></script>

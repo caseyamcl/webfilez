@@ -64,6 +64,31 @@ table{
 }
 
 /*------------------------------------*\
+  CLEARFIX
+\*------------------------------------*/
+
+.clearfix:after {
+  content: ".";
+  display: block;
+  clear: both;
+  visibility: hidden;
+  line-height: 0;
+  height: 0;
+}
+ 
+.clearfix {
+  display: inline-block;
+}
+ 
+html[xmlns] .clearfix {
+  display: block;
+}
+ 
+* html .clearfix {
+  height: 1%;
+}
+
+/*------------------------------------*\
   MAIN
 \*------------------------------------*/
 
@@ -117,6 +142,18 @@ body > footer {
 #filemgr {
   margin: 0;
   padding: 0;
+}
+
+#filemgr #breadcrumbs {
+  display: block;
+  width: 98%;
+  margin: auto;
+  padding: 10px 0;
+}
+
+#filemgr #breadcrumbs > li {
+  display: block;
+  float: left;
 }
 
 #filemgr #filelist.icons > li {

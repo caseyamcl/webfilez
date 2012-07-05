@@ -286,13 +286,19 @@ class Webfilez {
      */
     private function loadInterface()
     {
-        //Set the baseurl variable
-        $baseurl = rtrim($this->url->get_base_url_path(), '/');
+        //Variables
+        $templateVars = array(
+            'baseurl'     => rtrim($this->url->get_base_url_path(), '/'),
+            'currentpath' => $this->url->get_path_string()
+        );
 
         //Do the output
         $ds = DIRECTORY_SEPARATOR;
         $html =  file_get_contents(BASEPATH . "..{$ds}assets{$ds}html{$ds}template.html");
-        $html = str_replace('{baseurl}', $baseurl, $html);
+        foreach ($templateVars as $search => $repl) {
+            $html = str_replace('{' . $search . '}', $repl, $html);
+        }
+
         return $html;
     }
 
