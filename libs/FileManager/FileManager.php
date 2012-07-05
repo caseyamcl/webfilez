@@ -124,7 +124,11 @@ class FileManager
                 continue;
             }
 
-            $output[$file] = ltrim($dirPath . DIRECTORY_SEPARATOR . $file, '/');
+            $output[$file] = (object) array(
+                'path' => ltrim($dirPath . DIRECTORY_SEPARATOR . $file, '/'),
+                'name' => $file,
+                'type' => is_dir($this->resolveRealPath($dirPath . DIRECTORY_SEPARATOR . $file)) ? 'dir' : 'file'
+            );
         }
 
         return $output;
@@ -152,11 +156,11 @@ class FileManager
         //Delete contents if specified
         if (! empty($contents) && $deleteContents) {
             
-            foreach($contents as $filepath) {
-                if (is_file($this->resolveRealPath($filepath)))
-                    $this->deleteFile($filepath);
+            foreach($contents as $info) {
+                if (is_file($this->resolveRealPath($info->path)))
+                    $this->deleteFile($info->path);
                 else
-                    $this->deleteDir($filepath, true);
+                    $this->deleteDir($info->path, true);
             }
         } 
         elseif (! empty($contents)) {

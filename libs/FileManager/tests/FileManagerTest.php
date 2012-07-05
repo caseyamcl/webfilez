@@ -236,9 +236,9 @@ class FileManagerTest extends PHPUnit_Framework_TestCase {
     $obj = new FileManager($this->content_path);
 
     $match = array(
-      'content.php' => 'some_content/content.php',
-      'meta.json'    => 'some_content/meta.json',
-      'subcontent'  => 'some_content/subcontent'
+      'content.php' => (object) array('path' => 'some_content/content.php', 'name' => 'content.php', 'type' => 'file'),
+      'meta.json'   => (object) array('path' => 'some_content/meta.json', 'name' => 'meta.json', 'type' => 'file'),
+      'subcontent'  => (object) array('path' => 'some_content/subcontent', 'name' => 'subcontent', 'type' => 'dir'),
     );
 
     $this->assertEquals($match, $obj->getDir('some_content'));
