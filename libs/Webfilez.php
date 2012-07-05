@@ -289,7 +289,8 @@ class Webfilez {
         //Variables
         $templateVars = array(
             'baseurl'     => rtrim($this->url->get_base_url_path(), '/'),
-            'currentpath' => $this->url->get_path_string()
+            'currentpath' => $this->url->get_path_string(),
+            'currenttype' => is_dir($this->fileMgr->resolveRealPath($this->url->get_path_string())) ? 'dir' : 'file'
         );
 
         //Do the output
@@ -300,7 +301,7 @@ class Webfilez {
         }
 
         //Replace anything between <? tags 
-        $html = str_replace("/<\?(.+?)\?>/", '', $html);
+        $html = preg_replace("/<\?(.+?)\?>(\n+)?/s", '', $html);
 
         return $html;
     }
