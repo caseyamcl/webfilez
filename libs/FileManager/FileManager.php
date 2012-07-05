@@ -117,21 +117,31 @@ class FileManager
             return false;
         }
 
-        $output = array();
+        $outputDirs = array();
+        $outputFiles = array();
         foreach (scandir($fullDirPath) as $file) {
 
             if ($file == '.' OR $file == '..') {
                 continue;
             }
 
-            $output[$file] = (object) array(
+            $isDir = is_dir($this->resolveRealPath($dirPath . DIRECTORY_SEPARATOR . $file));
+
+            $obj = (object) array(
                 'path' => ltrim($dirPath . DIRECTORY_SEPARATOR . $file, '/'),
                 'name' => $file,
-                'type' => is_dir($this->resolveRealPath($dirPath . DIRECTORY_SEPARATOR . $file)) ? 'dir' : 'file'
+                'type' => $isDir ? 'dir' : 'file'
             );
+
+            if ($isDir) {
+                $outputDirs[$file] = $obj;
+            }
+            else {
+                $outputFiles[$file] = $obj;
+            }
         }
 
-        return $output;
+        return array_merge($outputDirs, $outputFiles);
     }
 
     // ------------------------------------------------------------------------

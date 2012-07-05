@@ -101,14 +101,25 @@ body {
 /* ===== Layout ====== */
 
 body > header {
-  background-color: #F1F1F1;
+  background-color: #333;
+  color: #FFF;
+  padding: 5px;
   border-bottom: 1px solid #000;
 }
 
 body > footer {
-  clear: both;
-  background-color: #E4E4E4;
+  display: none;
+  height: 0;
+  background-color: #333;
   border-top: 1px solid #000;
+  color: #FFF;
+  padding: 5px;
+  font-size: 0.9em;
+}
+
+body > header a,
+body > footer a {
+  color: #FFF;
 }
 
 #main {
@@ -134,14 +145,31 @@ body > footer {
   padding: 5px;
 }
 
+#uploader #current_upload #upload_start {
+  float: right;
+}
+
+#uploader #queue_status {
+  margin: 8px;
+  padding: 5px;
+}
+
 #uploader #upload_queue {
   margin: 8px;
   overflow-y: scroll;
 }
 
+#uploader #upload_queue.nofiles {
+  background-image: url('../img/dragdropmsg.png');
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
 #filemgr {
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 #filemgr .breadcrumbpanel {
@@ -151,17 +179,26 @@ body > footer {
   padding: 0;
 }
 
-#filemgr #breadcrumbs {
+#filemgr .breadcrumbsection {
   margin: 10px;
-  width: 98%;
   background-color: #CCC;
-  padding: 10px 15px;
+  padding: 10px 15px 3px 15px;
   border-radius: 10px;
 }
 
 #filemgr #breadcrumbs > li {
   display: block;
   float: left;
+}
+
+#filemgr #breadcrumbs > li a {
+  display: block;
+  text-decoration: none;
+  color: #000;
+}
+
+#filemgr #breadcrumbs > li a:hover {
+  text-decoration: underline;
 }
 
 #filemgr #breadcrumbs > li.sep {
@@ -177,10 +214,17 @@ body > footer {
   padding-top: 34px;
   width: 120px;
   text-align: center;
-  background-image: url('../img/file_32x32.png');
   background-position: top center;
   background-repeat: no-repeat;
   font-size: 0.8em;
+}
+
+#filemgr #filelist.icons li.file {
+    background-image: url('../img/file_32x32.png');
+}
+
+#filemgr #filelist.icons li.dir {
+    background-image: url('../img/folder_32x32.png');
 }
 
 #filemgr #filelist.list > li {
@@ -188,8 +232,16 @@ body > footer {
   margin: 10px;
   padding-left: 20px;
   width: 150px;
-  background-image: url('../img/file_16x16.png');
   background-position: top left;
   background-repeat: no-repeat;
   font-size: 1em;
+}
+
+
+#filemgr #filelist.list > li.file {
+  background-image: url('../img/file_16x16.png');
+} 
+
+#filemgr #filelist.list li.dir {
+    background-image: url('../img/folder_16x16.png');
 }

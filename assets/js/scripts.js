@@ -9,8 +9,6 @@ $(document).ready(function() {
   debug_mode = true;
 
   //Current directory
-  //@TODO: Make this know if we are looking at a file
-  //  may need to have PHP report this
   currpath = (window.location.href).substr(server_url.length) + '/';
 
   /*
@@ -41,6 +39,21 @@ $(document).ready(function() {
   
   //Start processing queue
   $('#current_upload').bind('click', queue_process);
+
+  //Click on folder link
+
+  //Click on file link
+
+  //Try to navigate away
+  window.onbeforeunload = function() {
+    if (get_queue_state() != 'ready') {
+      alert("The queue is currently processing!  Navigating away from this page will destroy your current uploads.  Are you sure you want to do this?");
+    }
+    if (get_queue_count() > 0) {
+      alert("If you leave this page, your files will not be uploaded.  Are you sure you want to do this?");
+    }
+  };
+
 });
 
 // -----------------------------------------------------------------------------
@@ -54,7 +67,7 @@ function setup_layout() {
   var windowheight = $(window).height();
   var minusheight = 1; //extra px
   minusheight += $('body > header').outerHeight();
-  minusheight += $('body > footer').outerHeight();
+  minusheight += $('body > footer').height();
   var containerheight = windowheight - minusheight;
   
   //Set the file manager and the container height to the correct px

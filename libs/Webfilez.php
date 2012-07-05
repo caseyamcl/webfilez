@@ -302,7 +302,6 @@ class Webfilez {
 
         //Replace anything between <? tags 
         $html = preg_replace("/<\?(.+?)\?>(\n+)?/s", '', $html);
-
         return $html;
     }
 

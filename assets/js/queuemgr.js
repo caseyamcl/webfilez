@@ -103,7 +103,7 @@ function queue_append(file_object) {
 
   //@TODO: Make this more user-friendly
   if (queue_items[key] != undefined) {
-    alert("Already exists");
+    console.log(file_object.name + " is already queued for upload");
     return;
   }
 
@@ -115,6 +115,7 @@ function queue_append(file_object) {
     
   //Add the item to the <li> queue
   $('#upload_queue').append("<li title='"+ key +"'>" + file_object.name + "</li>")
+  $('#upload_queue').removeClass('nofiles');
   update_queue_status_txt();
 }
 
@@ -158,14 +159,15 @@ function queue_dragexit_handler(e) {
  */
 function queue_drop_handler(e) {
   e.preventDefault();
-  var files = e.originalEvent.dataTransfer.files;
+  if (e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files) {
 
-  $.each(files, function(k,v) {
-    queue_append(v);
-  });
-  
-  set_queue_state('ready');
-  $('#upload_queue').css('border', 'none');
+    $.each(e.originalEvent.dataTransfer.files, function(k,v) {
+      queue_append(v);
+    });
+    
+    set_queue_state('ready');
+    $('#upload_queue').css('border', 'none');
+  }
 }
 
 /* EOF: queuemgr.js */

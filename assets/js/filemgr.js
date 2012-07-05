@@ -11,15 +11,22 @@ function filemgr_get_file_list() {
         success: function(data) {
             html = '';
             $.each(data, function(k, v) {
-                var theurl  = server_url + v;
-                var newhtml = sprintf("<li title='%s'><a href='%s' title='%s'><span class='name'>%s</span></a></li>", k, theurl, k, filemgr_prep_filename(k));
+                var theurl  = server_url + v.path;
+                var newhtml = sprintf(
+                    "<li title='%s' class='%s'><a href='%s' title='%s'><span class='name'>%s</span></a></li>",
+                    k,
+                    v.type,
+                    theurl,
+                    k,
+                    filemgr_prep_filename(k)
+                );
+
                 html = html + newhtml;
             });
 
             $('#filemgr #filelist').html(html);
         }
     });
-
 }
 
 function build_breadcrumbs() {
