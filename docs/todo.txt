@@ -1,3 +1,10 @@
+To-Do:
+
+The Upload Library now fails on tests.  Need to finish conding the Strategy classes
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
 1. Install Jekyll for generating documentation
 2. Setup this folder for Jekyll
 3. Build documents in here for the application
