@@ -2,6 +2,8 @@
 
 /*
  * Webfilez Config
+ *
+ * Copy config.sample.php to config.php!
  */
 
 /**
@@ -17,6 +19,6 @@ $config['autobuild'] = TRUE;
  * then uploading will happen very slowly.  Keep off
  * for production!
  */
-$config['slow'] = TRUE;
+$config['slow'] = FALSE;
 
 /* EOF: config.php */
