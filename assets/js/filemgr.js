@@ -26,7 +26,7 @@ function build_breadcrumbs() {
     var sections = current_path.split('/');
     var first = $('#breadcrumbs > li.home').html();
 
-    var output = "<li class='home'>" + first + "</li>";
+    var output = sprintf("<li class='home'><a href='%s' title='Home'>Home</a></li>", server_url);
     var currpath = '';
     $.each(sections, function(k,v) {
         currpath = '/' + currpath + v;

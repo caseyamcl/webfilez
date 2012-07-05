@@ -299,6 +299,9 @@ class Webfilez {
             $html = str_replace('{' . $search . '}', $repl, $html);
         }
 
+        //Replace anything between <? tags 
+        $html = str_replace("/<\?(.+?)\?>/", '', $html);
+
         return $html;
     }
 
