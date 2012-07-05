@@ -124,7 +124,7 @@ class FileManager
                 continue;
             }
 
-            $output[$file] = $dirPath . DIRECTORY_SEPARATOR . $file;
+            $output[$file] = ltrim($dirPath . DIRECTORY_SEPARATOR . $file, '/');
         }
 
         return $output;

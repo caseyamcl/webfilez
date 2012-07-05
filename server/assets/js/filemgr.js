@@ -11,7 +11,7 @@ function filemgr_get_file_list() {
         success: function(data) {
             html = '';
             $.each(data, function(k, v) {
-                html = html + "<li><span class='name'>" + v + "</span></li>";
+                html = html + "<li><span class='name'>" + k + "</span></li>";
             });
 
             $('#filemgr #filelist').html(html);

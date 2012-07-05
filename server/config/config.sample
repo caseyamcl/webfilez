@@ -15,13 +15,6 @@
 $config['autobuild'] = true;
 
 /*
- * For debugging purposes; if slow is equal to true,
- * then uploading will happen very slowly.  Keep off
- * for production!
- */
-$config['slow'] = false;
-
-/*
  * Get Folder Callback
  *
  * 'foldercallback' is required and should return
@@ -38,5 +31,12 @@ $config['slow'] = false;
  */
 $config['foldercallback']     = '';
 $config['foldercallbackfile'] = '';
+
+/*
+ * For debugging purposes; if slow is equal to true,
+ * then uploading will happen very slowly.  Keep off
+ * for production!
+ */
+$config['slow'] = false;
 
 /* EOF: config.php */

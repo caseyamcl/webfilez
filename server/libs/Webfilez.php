@@ -191,8 +191,7 @@ class Webfilez {
                 //Determine upload ID - Try header first, then query array
                 $fileUploadID = $this->request->get_header('Uploadfileid') ?: $this->request->get_query_item('id');
 
-                //@TODO: Add mechanism to allow for overwrite!
-                if ( ! $exists) {
+                if ( ! $exists OR ($this->request->get_header('Overwrite') ?: $this->request->get_query_item('overwrite'))) {
                     $output = $this->uploadHandler->processUpload($path, $_SERVER['CONTENT_LENGTH'], $fileUploadID);
                     $this->response->set_output(json_encode($output));
                 }

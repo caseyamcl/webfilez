@@ -119,7 +119,7 @@ class UploadHandler
     {
             //Check destination by getting the real path, and then trying to put
             //an empty file in using the FileMgr
-            $path = $this->fileMgr->putFile($path, '', false);
+            $path = $this->fileMgr->putFile($path, '', true);
             $realpath = $this->fileMgr->resolveRealPath($path);
             
             //Set the base file name
