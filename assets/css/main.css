@@ -147,9 +147,14 @@ body > footer a {
 
 /* ==== Uploader ==== */
 #uploader #current_upload {
-  background-color: #999;
+  background-color: #CCC;
   margin: 8px;
   padding: 5px;
+}
+
+#uploader #current_upload #current_upload_status {
+  margin: 4px;
+  display: block;
 }
 
 #uploader #current_upload #upload_start {

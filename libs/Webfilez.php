@@ -237,6 +237,7 @@ class Webfilez {
 
         //Stream the file
         if ( ! $isDir && $exists && $this->url->get_segment('contents')) {
+            $this->response->set_http_header('Content-type: application/octet-stream');
             $this->response->set_output($realpath, Requesty\Response::FILEPATH);
         }
         elseif ($exists) {
