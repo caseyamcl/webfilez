@@ -30,18 +30,22 @@ function filemgr_get_file_list() {
     });
 }
 
-function filemgr_get_file_details() {
+function filemgr_get_file_details(additionalPath) {
+
+    if (typeof additionalPath == 'undefined') {
+        additionalPath = '';
+    }
+
     $.ajax({
-        url: server_url + current_path,
+        url: server_url + current_path + additionalPath,
         type: 'GET',
         dataType: 'json',
         success: function(data) {
-            html = '';
-            $.each(data, function(k, v) {
-                html = html + "<li>" + k + " -- " + v + "</li>";
-            });
+            html = "<span class='filedetailsclose'>X</span>"
+            html = html + "<h3 id='filename'>" + data.relpath + "</h3>";
+            html = html + "<a href='" + server_url + data.relpath +"?contents=true' title='View/Download File' class='filestream'>View/Download</span>";
 
-            $('#filemgr #filedetails').html("<ul class='filedetaillist'>" + html + "</ul>");
+            $('#filemgr #filedetails').html(html);
             $('#filemgr #filedetails').show();
         }
     });
@@ -86,6 +90,15 @@ function filemgr_prep_filename(fname, limit) {
 
     return fname;
 
+}
+
+function filemgr_view_file(e) {
+    e.preventDefault();
+    filemgr_get_file_details($(this).parent('li').attr('title'));
+}
+
+function filemgr_close_file(e) {
+    $(this).parent('#filedetails').hide();
 }
 
 function initialize_filemgr() {

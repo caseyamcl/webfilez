@@ -88,6 +88,13 @@ html[xmlns] .clearfix {
   height: 1%;
 }
 
+.clear {
+  clear: both;
+  display: block;
+  height: 1px;
+  color: transparent;
+}
+
 /*------------------------------------*\
   MAIN
 \*------------------------------------*/
@@ -170,6 +177,7 @@ body > footer a {
   padding: 0;
   overflow-x: hidden;
   overflow-y: scroll;
+  position: relative;
 }
 
 #filemgr .breadcrumbpanel {
@@ -206,7 +214,6 @@ body > footer a {
   font-size: 1.2em;
   margin: 0 8px;
 }
-
 
 #filemgr #filelist.icons > li {
   float: left;
@@ -246,5 +253,26 @@ body > footer a {
 }
 
 #filemgr #filedetails {
-  margin: 20px 10px 10px 30px;
+  margin: 20px 30px 10px 30px;
+  width: 45%;
+  border: 3px solid #111;
+  padding: 5px;
+  box-shadow: 5px 1px 5px #888;
+  background-color: #F5F5F5;
+  z-index: 2;
+  position: absolute;
+  right: 0;
+}
+
+#filemgr #filedetails .filedetailsclose {
+  cursor: pointer;
+  float: right;
+  padding: 4px;
+  display: block;
+  border-radius: 4px;
+}
+
+#filemgr #filedetails .filedetailsclose:hover {
+  background-color: #990000;
+  color: #FFF;
 }

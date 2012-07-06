@@ -7,6 +7,7 @@ function queue_process() {
   //Get the next item in the queue.  If FALSE, then stop processing the queue
   if (get_queue_state() != 'cancelling') {
     set_queue_state('processing');
+    interface_hide('upload_start');
   }
    
   var queue_item = queue_shift();
@@ -55,7 +56,6 @@ function queue_process() {
         //Revert message
         interface_update_content('current_upload_filename', 'No Uploads in Progress');
         interface_hide('current_upload_filename');
-        interface_hide('upload_start');
         
         //Recursive callback
         queue_process();
@@ -65,6 +65,7 @@ function queue_process() {
   }
   else {
     set_queue_state('ready');
+    interface_show('upload_start');
   }
 }
 

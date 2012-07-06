@@ -19,7 +19,6 @@ $(document).ready(function() {
   initialize_queue();
   initialize_filemgr();
   
-
   
   /*
    * Event handlers
@@ -40,9 +39,9 @@ $(document).ready(function() {
   //Start processing queue
   $('#current_upload').bind('click', queue_process);
 
-  //Click on folder link
-
   //Click on file link
+  $("#filemgr #filelist").on('click', 'li.file > a', filemgr_view_file);
+  $('#filemgr').on('click', '#filedetails .filedetailsclose', filemgr_close_file);
 
   //Try to navigate away
   window.onbeforeunload = function() {
