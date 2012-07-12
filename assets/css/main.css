@@ -308,3 +308,18 @@ body > footer a {
   background-color: #990000;
   color: #FFF;
 }
+
+#filemgr #filedetails a {
+  background-color: #444;
+  color: #FFF;
+  display: block;
+  float: left;
+  margin: 3px 5px 3px 0;
+  padding: 3px 12px;
+  text-decoration: none;
+  border-radius: 10px;
+}
+
+#filemgr #filedetails a:active {
+  background-color: #101010;
+}

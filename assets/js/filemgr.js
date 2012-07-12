@@ -54,6 +54,11 @@ function filemgr_get_file_details(additionalPath) {
 
 function filemgr_delete_file(e) {
     e.preventDefault();
+
+    if (confirm("Really delete this file?") == false) {
+        return;
+    } 
+
     //console.log("Will delete: " + $(this).attr('href'));
     $.ajax({
         url: $(this).attr('href'),
