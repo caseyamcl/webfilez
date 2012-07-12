@@ -18,17 +18,17 @@ class Webfilez {
     private $fileMgr;
 
     /**
-     * @var Requesty\Request
+     * @var Reqresp\Request
      */
     private $request;
 
     /**
-     * @var Requesty\Response
+     * @var Reqresp\Response
      */
     private $response;
 
     /**
-     * @var Requesty\Url
+     * @var Reqresp\Url
      */
     private $url;
 
@@ -61,7 +61,7 @@ class Webfilez {
         spl_autoload_register(array($this, 'autoloader'), TRUE, TRUE);
 
         //Error Manager
-        Requesty\ErrorWrapper::invoke();
+        Reqresp\ErrorWrapper::invoke();
     }
 
     // ------------------------------------------------------------------------
@@ -80,13 +80,13 @@ class Webfilez {
             $this->response->go();
         }
         catch (WebfilezNotAuthorizedException $e) {
-            $this->response->set_http_status('401');
+            $this->response->setStatus('401');
 
-            if ($this->request->is_ajax()) {
-                $this->response->set_output(json_encode(array('msg' => 'Not Authorized')));
+            if ($this->request->isAjax) {
+                $this->response->setBody(json_encode(array('msg' => 'Not Authorized')));
             }
             else {
-                $this->request->set_output("Not Authorized");
+                $this->response->setBody("Not Authorized");
             }
         }
         catch (Exception $e) {
@@ -109,11 +109,9 @@ class Webfilez {
         $configdir = BASEPATH . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR;
         $this->config = new Configula\Config($configdir);
 
-        $cachedir = sys_Get_temp_dir();
-        $this->request = new Requesty\Request(new Browscap($cachedir));
-
-        $this->response =  new Requesty\Response();
-        $this->url = new Requesty\Uri();
+        $this->request = new Reqresp\Request();
+        $this->response =  new Reqresp\Response();
+        $this->url = new Reqresp\Uri();
 
         //Second Tier
         $this->fileMgr = new FileManager($this->getFolder(), array(), (boolean) $this->config->autobuild);
@@ -148,22 +146,22 @@ class Webfilez {
     private function route() {
 
         //Getting upload status? Path: uploadstatus?id=##
-        if ($this->url->get_segment(1) == 'uploadstatus' && $this->url->get_query_item('id') !== false) {
+        if ($this->url->path(1) == 'uploadstatus' && $this->url->query('id') !== false) {
 
             //Attempt to set the headers to disallow caching for this type of request
-            $this->response->set_http_header("Cache-Control: no-cache, must-revalidate");
-            $this->response->set_http_header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");  
+            $this->response->setHeader("Cache-Control: no-cache, must-revalidate");
+            $this->response->setHeader("Expires: Mon, 26 Jul 1997 05:00:00 GMT");  
 
             //Get the data
-            $respData = json_encode($this->uploadHandler->getUploadStatus($this->url->get_query_item('id')));
+            $respData = json_encode($this->uploadHandler->getUploadStatus($this->url->query('id')));
             
             //Set the output
-            $this->response->set_output($respData);
+            $this->response->setBody($respData);
         }
 
         //Getting server configuration?  Path: serverconfig?item=all or ?item=someitem
-        elseif ($this->url->get_segment(1) == 'serverconfig' && $this->url->get_query_item('item') !== false) {
-            $this->routeServerConfig($this->url->get_query_item('item'));
+        elseif ($this->url->path(1) == 'serverconfig' && $this->url->query('item') !== false) {
+            $this->routeServerConfig($this->url->query('item'));
         }
 
         //Default action will be to assume we are getting a resource (any other path)
@@ -179,25 +177,25 @@ class Webfilez {
      */
     private function routeFile() {
 
-        $path     = $this->url->get_path_string();
+        $path     = $this->url->path;
         $realpath = $this->fileMgr->resolveRealPath($path);
         $exists   = is_readable($realpath);
-        $isDir    = ($exists & is_dir($realpath) OR $this->url->get_query_item('isdir') == true);
+        $isDir    = ($exists & is_dir($realpath) OR $this->url->query('isdir') == true);
 
-        switch($this->request->get_method()) {
+        switch($this->request->method) {
 
             case 'PUT':
 
                 //Determine upload ID - Try header first, then query array
-                $fileUploadID = $this->request->get_header('Uploadfileid') ?: $this->request->get_query_item('id');
+                $fileUploadID = $this->request->header('Uploadfileid') ?: $this->url->query('id');
 
-                if ( ! $exists OR ($this->request->get_header('Overwrite') ?: $this->request->get_query_item('overwrite'))) {
+                if ( ! $exists OR ($this->request->header('Overwrite') ?: $this->url->query('overwrite'))) {
                     $output = $this->uploadHandler->processUpload($path, $_SERVER['CONTENT_LENGTH'], $fileUploadID);
-                    $this->response->set_output(json_encode($output));
+                    $this->response->setBody(json_encode($output));
                 }
                 else {
-                    $this->response->set_http_status();
-                    $this->response->set_output(json_encode(array('msg' => 'File already exists')));
+                    $this->response->setStatus();
+                    $this->response->setBody(json_encode(array('msg' => 'File already exists')));
                 }
 
             break;
@@ -208,8 +206,8 @@ class Webfilez {
                     //If no match, copy the file using the filePut and then delete the old one
                 }
                 else {
-                    $this->response->set_http_status(404);
-                    $this->response->set_output(json_encode(array('msg' => 'File not found')));
+                    $this->response->setStatus(404);
+                    $this->response->setBody(json_encode(array('msg' => 'File not found')));
                 }
 
             break;
@@ -220,8 +218,12 @@ class Webfilez {
             case 'GET': //GET will be the only method that supports HTML output
             default:
 
-                if ( ! $this->request->is_ajax()) {
-                    $this->response->set_output($this->loadInterface());
+                if ( ! $isDir && $exists && $this->url->query('contents')) {
+                    $this->response->setHeader('Content-type: application/octet-stream');
+                    $this->response->setBody($realpath, Reqresp\Response::FILEPATH);                    
+                }
+                elseif ( ! $this->request->isAjax) {
+                    $this->response->setBody($this->loadInterface());
                 }
                 else {
                     $this->routeGetFile($path, $realpath, $exists, $isDir);
@@ -236,11 +238,7 @@ class Webfilez {
     private function routeGetFile($path, $realpath, $exists, $isDir) {
 
         //Stream the file
-        if ( ! $isDir && $exists && $this->url->get_segment('contents')) {
-            $this->response->set_http_header('Content-type: application/octet-stream');
-            $this->response->set_output($realpath, Requesty\Response::FILEPATH);
-        }
-        elseif ($exists) {
+        if ($exists) {
 
             //Get the object
             $theObj = ($isDir)
@@ -248,11 +246,11 @@ class Webfilez {
                 : $this->fileMgr->getFile($path);
 
             //Output it
-            $this->response->set_output(json_encode($theObj));
+            $this->response->setBody(json_encode($theObj));
         }
         else { //Not exists
-            $this->response->set_http_status(404);
-            $this->response->set_output(json_encode(array('msg' => 'File or folder not found')));
+            $this->response->setHeader(404);
+            $this->response->setBody(json_encode(array('msg' => 'File or folder not found')));
         }
     }
 
@@ -267,14 +265,14 @@ class Webfilez {
 
       $config = array('a' => 1, 'b' => 2);
       if ($item == 'all') {
-          $this->response->set_output(json_encode($config));
+          $this->response->setBody(json_encode($config));
       }
       elseif (isset($config[$item])) {
-          $this->response->set_output(json_encode(array($item => $config[$item])));
+          $this->response->setBody(json_encode(array($item => $config[$item])));
       }
       else {
-          $this->response->set_http_status(404);
-          $this->response->set_output(json_encode(array('msg' => 'Configuration setting not found')));
+          $this->response->setHeader(404);
+          $this->response->setBody(json_encode(array('msg' => 'Configuration setting not found')));
       }
     }
 
@@ -289,9 +287,9 @@ class Webfilez {
     {
         //Variables
         $templateVars = array(
-            'baseurl'     => rtrim($this->url->get_base_url_path(), '/'),
-            'currentpath' => $this->url->get_path_string(),
-            'currenttype' => is_dir($this->fileMgr->resolveRealPath($this->url->get_path_string())) ? 'dir' : 'file'
+            'baseurl'     => rtrim($this->url->baseurl, '/'),
+            'currentpath' => $this->url->path,
+            'currenttype' => is_dir($this->fileMgr->resolveRealPath($this->url->path)) ? 'dir' : 'file'
         );
 
         //Do the output
