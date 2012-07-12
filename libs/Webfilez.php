@@ -191,16 +191,38 @@ class Webfilez {
 
             case 'PUT':
 
-                //Determine upload ID - Try header first, then query array
-                $fileUploadID = $this->request->header('Uploadfileid') ?: $this->url->query('id');
+                if ($this->request->header('IsDir') ?: $this->url->query('isDir')) {
 
-                if ( ! $exists OR ($this->request->header('Overwrite') ?: $this->url->query('overwrite'))) {
-                    $output = $this->uploadHandler->processUpload($path, $_SERVER['CONTENT_LENGTH'], $fileUploadID);
-                    $this->response->setBody(json_encode($output));
+                  try {
+                      $result = $this->fileMgr->putDir($path);  
+                  }
+                  catch (FileManagerIOException $e) {
+                      $result = false;
+                  }
+
+                  if ($result) {
+                    $this->response->setStatus(201);
+                    $this->response->setBody(json_encode(array('created' => $path)));
+                  }
+                  else {
+                    $this->response->setStatus(500);
+                    $this->response->setBody(json_encode(array('msg' => $e->getMessage())));
+                  }
+
                 }
-                else {
-                    $this->response->setStatus();
-                    $this->response->setBody(json_encode(array('msg' => 'File already exists')));
+                else { //is file...
+
+                  //Determine upload ID - Try header first, then query array
+                  $fileUploadID = $this->request->header('Uploadfileid') ?: $this->url->query('id');
+
+                  if ( ! $exists OR ($this->request->header('Overwrite') ?: $this->url->query('overwrite'))) {
+                      $output = $this->uploadHandler->processUpload($path, $_SERVER['CONTENT_LENGTH'], $fileUploadID);
+                      $this->response->setBody(json_encode($output));
+                  }
+                  else {
+                      $this->response->setStatus(409);
+                      $this->response->setBody(json_encode(array('msg' => 'File already exists')));
+                  }
                 }
 
             break;

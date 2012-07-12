@@ -226,6 +226,24 @@ body > footer a {
   border-radius: 10px;
 }
 
+#filemgr .breadcrumbsection > #mkdir {
+  float: right;
+  background-color: #444;
+  color: #FFF;
+  padding: 3px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+#filemgr .breadcrumbsection > #mkdir:hover {
+  background-color: #222;
+}
+
+#filemgr .breadcrumbsection > #mkdir:active {
+  background-color: #101010;
+}
+
 #filemgr #breadcrumbs > li {
   display: block;
   float: left;

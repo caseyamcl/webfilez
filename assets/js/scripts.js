@@ -49,6 +49,9 @@ $(document).ready(function() {
   //Click on delete link
   $('#filemgr').on('click', '.delete_link', filemgr_delete_file);
 
+  //Click on add folder link
+  $('#filemgr').on('click', '#mkdir', filemgr_add_dir);
+
   //Try to navigate away
   window.onbeforeunload = function() {
     if (get_queue_state() != 'ready') {

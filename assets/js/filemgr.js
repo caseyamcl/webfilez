@@ -114,6 +114,43 @@ function filemgr_prep_filename(fname, limit) {
 
 }
 
+function filemgr_add_dir(dirname) {
+
+    if (typeof dirname != 'string') {
+        dirname = '';
+    }
+
+    var dirname = prompt("Enter folder name", dirname);
+
+    if ( ! dirname) {
+        return;
+    }
+
+    var matches = dirname.match(/^([a-z0-9 \.-_]+)$/i);
+    if (matches && dirname.length < 255) {
+        
+        var fullurl = server_url + current_path + dirname;
+
+        $.ajax({
+            url: fullurl,
+            type: 'PUT',
+            dataType: 'json',
+            beforeSend: function(jqXHR, settings) {
+                jqXHR.setRequestHeader("IsDir", 1);
+            },
+            success: function(data) {
+                window.location = fullurl;
+            }
+        });
+
+
+    }
+    else {
+        alert("Invalid folder name.  Only letters, numbers, spaces, dashes, and periods allowed.  Max length is 255 characters");
+        filemgr_add_dir(dirname);
+    }
+}
+
 function filemgr_view_file(e) {
     e.preventDefault();
     filemgr_get_file_details($(this).parent('li').attr('title'));
