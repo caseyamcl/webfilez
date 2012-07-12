@@ -177,6 +177,33 @@ body > footer a {
   background-repeat: no-repeat;
 }
 
+#uploader #file_button_form {
+  margin: 8px;
+  padding: 4px 0;
+  position: relative;
+  background-color: #999;
+  border-radius: 10px;
+  text-align: center;
+}
+
+#uploader #file_button_form > label {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  text-align: center;
+}
+
+#uploader #file_button_form > input {
+  opacity: 0;
+  z-index: 3;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  display: block;
+  cursor: pointer !important;
+}
+
+
 #filemgr {
   margin: 0;
   padding: 0;

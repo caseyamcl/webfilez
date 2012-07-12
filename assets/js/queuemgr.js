@@ -170,4 +170,22 @@ function queue_drop_handler(e) {
   }
 }
 
+// -----------------------------------------------------------------------------
+
+/**
+ * Queue file button handler
+ */
+ function queue_file_button_handler(e) {
+
+  set_queue_state('lock');
+
+  var fileList = $(this).prop('files');
+  $.each(fileList, function(k, v) { 
+    queue_append(v);
+  });
+  $(this).attr('value', '');
+
+  set_queue_state('ready');
+ }
+
 /* EOF: queuemgr.js */
