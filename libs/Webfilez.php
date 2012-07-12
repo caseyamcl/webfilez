@@ -37,6 +37,11 @@ class Webfilez {
      */
     private $uploadHandler;
   
+    /**
+     * @var array
+     */
+    private $mimeTypes;
+
     // ------------------------------------------------------------------------
     
     /**
@@ -219,7 +224,9 @@ class Webfilez {
             default:
 
                 if ( ! $isDir && $exists && $this->url->query('contents')) {
-                    $this->response->setHeader('Content-type: application/octet-stream');
+                    $ctype = $this->resolveMime(pathinfo($realpath, PATHINFO_EXTENSION)) ?: 'application/octet-stream';
+
+                    $this->response->setHeader('Content-type: '. $ctype);
                     $this->response->setBody($realpath, Reqresp\Response::FILEPATH);                    
                 }
                 elseif ( ! $this->request->isAjax) {
@@ -277,6 +284,36 @@ class Webfilez {
     }
 
     // ------------------------------------------------------------------------
+
+    /**
+     * Resolve mime type for file download
+     *
+     * @param string $fileExtension
+     * File extension
+     *
+     * @return string|boolean
+     * Returns false if mime type not found
+     *
+     */
+    private function resolveMime($fileExt) {
+
+        //Load mimes if not already loaded
+        if ( ! $this->mimeTypes) {
+            require_once(BASEPATH . 'mimes.php');
+            $configMimes = ((array) $this->config->mimeTypes) ?: array();
+            $this->mimeTypes = array_merge($mimes, $configMimes);
+        }
+
+        //Try to resolve
+        $fileExt = ltrim($fileExt, '.');
+
+        if (isset($this->mimeTypes[$fileExt])) {
+            return (is_array($this->mimeTypes[$fileExt])) ? $this->mimeTypes[$fileExt][0] : $this->mimeTypes[$fileExt];
+        }
+        else {
+            return false;
+        }
+    }
 
     /**
      * Load the interface HTML to download to a browser
