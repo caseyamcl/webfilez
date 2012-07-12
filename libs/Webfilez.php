@@ -218,6 +218,17 @@ class Webfilez {
             break;
             case 'DELETE':
 
+              if ($exists && ! $isDir) {
+                  $fileInfo = $this->fileMgr->getFile($path);
+                  $result = $this->fileMgr->deleteFile($path);
+                  $this->response->setStatus(($result) ? '200' : '500');
+                  $fileInfo['deleted'] = (int) $result;
+                  $this->response->setBody(json_encode($fileInfo));
+              }
+              else {
+                  $this->response->setStatus(404);
+                  $this->response->setBody(json_encode(array('msg' => 'File not found')));                
+              }
 
             break;
             case 'GET': //GET will be the only method that supports HTML output

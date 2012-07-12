@@ -46,6 +46,9 @@ $(document).ready(function() {
   $("#filemgr #filelist").on('click', 'li.file > a', filemgr_view_file);
   $('#filemgr').on('click', '#filedetails .filedetailsclose', filemgr_close_file);
 
+  //Click on delete link
+  $('#filemgr').on('click', '.delete_link', filemgr_delete_file);
+
   //Try to navigate away
   window.onbeforeunload = function() {
     if (get_queue_state() != 'ready') {
