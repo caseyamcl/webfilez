@@ -320,6 +320,10 @@ body > footer a {
   border-radius: 10px;
 }
 
+#filemgr #filedetails a:hover {
+  background-color: #222;
+}
+
 #filemgr #filedetails a:active {
   background-color: #101010;
 }

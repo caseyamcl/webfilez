@@ -42,7 +42,8 @@ function filemgr_get_file_details(additionalPath) {
         dataType: 'json',
         success: function(data) {
             html = "<span class='filedetailsclose'>X</span>"
-            html = html + "<h3 id='filename'>" + data.relpath + "</h3>";
+            html = html + "<h3 class='filename'>" + data.relpath + "</h3>";
+            html = html + "<p class='filesize'>" + data.size + " bytes</p>";
             html = html + "<a href='" + server_url + data.relpath +"?contents=true' title='View/Download File' class='filestream'>View/Download</span>";
             html = html + "<a href='" + server_url + data.relpath +"' class='delete_link' title='Delete File'>Delete</span>";
 
