@@ -6,18 +6,83 @@
    NOTE:WORK IN PROGRESS
    USE WITH CAUTION AND TEST WITH ABANDON */
 
-html,body,div,span,applet,object,iframe,
-h1,h2,h3,h4,h5,h6,p,blockquote,pre,
-a,abbr,acronym,address,big,cite,code,
-del,dfn,em,img,ins,kbd,q,s,samp,
-small,strike,strong,sub,sup,tt,var,
-b,u,i,center,
-dl,dt,dd,ol,ul,li,
-fieldset,form,label,legend,
-table,caption,tbody,tfoot,thead,tr,th,td,
-article,aside,canvas,details,figcaption,figure,
-footer,header,hgroup,menu,nav,section,summary,
-time,mark,audio,video{
+#webfilez, 
+#webfilez div,
+#webfilez span,
+#webfilez applet,
+#webfilez object,
+#webfilez iframe,
+#webfilez h1,
+#webfilez h2,
+#webfilez h3,
+#webfilez h4,
+#webfilez h5,
+#webfilez h6,
+#webfilez p,
+#webfilez blockquote,
+#webfilez pre,
+#webfilez a,
+#webfilez abbr,
+#webfilez acronym,
+#webfilez address,
+#webfilez big,
+#webfilez cite, 
+#webfilez code,
+#webfilez del,
+#webfilez dfn,
+#webfilez em,
+#webfilez img,
+#webfilez ins,
+#webfilez kbd,
+#webfilez q,
+#webfilez s,
+#webfilez samp,
+#webfilez small,
+#webfilez strike,
+#webfilez strong,
+#webfilez sub,
+#webfilez sup,
+#webfilez tt,
+#webfilez var,
+#webfilez b,
+#webfilez u,
+#webfilez i,
+#webfilez center,
+#webfilez dl,
+#webfilez dt,
+#webfilez dd,
+#webfilez ol,
+#webfilez ul,
+#webfilez li,
+#webfilez fieldset,
+#webfilez form,
+#webfilez label,
+#webfilez legend,
+#webfilez table,
+#webfilez caption,
+#webfilez tbody,
+#webfilez tfoot,
+#webfilez thead,
+#webfilez tr,
+#webfilez th,
+#webfilez td,
+#webfilez article,
+#webfilez aside,
+#webfilez canvas,
+#webfilez details,
+#webfilez figcaption,
+#webfilez figure,
+#webfilez footer,
+#webfilez header,
+#webfilez hgroup,
+#webfilez menu,
+#webfilez nav,
+#webfilez section,
+#webfilez summary,
+#webfilez time,
+#webfilez mark,
+#webfilez audio,
+#webfilez video {
   margin:0;
   padding:0;
   border:0;
@@ -26,39 +91,46 @@ time,mark,audio,video{
   font:inherit;
   vertical-align:baseline;
 }
+
 /* HTML5 display-role reset for older browsers */
-article,aside,details,figcaption,figure,
-footer,header,hgroup,menu,nav,section{
+#webfilez article,
+#webfilez aside,
+#webfilez details,
+#webfilez figcaption,
+#webfilez figure,
+#webfilez footer,
+#webfilez header,
+#webfilez hgroup,
+#webfilez menu,
+#webfilez nav,
+#webfilez section {
   display:block;
 }
-body{
-  line-height:1;
-}
-ol,ul{
+
+#webfilez ol,
+#webfilez ul {
   list-style:none;
 }
-blockquote,q{
+#webfilez blockquote,
+#webfilez q {
   quotes:none;
 }
-blockquote:before,blockquote:after,
-q:before,q:after{
+#webfilez blockquote:before,
+#webfilez blockquote:after,
+#webfilez q:before,
+#webfilez q:after {
   content:'';
   content:none;
 }
-/* remember to define visible focus styles!
-:focus{
-  outline:?????;
-} */
 
-/* remember to highlight inserts somehow! */
-ins{
+#webfilez ins {
   text-decoration:none;
 }
-del{
+#webfilez del {
   text-decoration:line-through;
 }
 
-table{
+#webfilez table {
   border-collapse:collapse;
   border-spacing:0;
 }
@@ -67,7 +139,7 @@ table{
   CLEARFIX
 \*------------------------------------*/
 
-.clearfix:after {
+#webfilez .clearfix:after {
   content: ".";
   display: block;
   clear: both;
@@ -76,7 +148,7 @@ table{
   height: 0;
 }
  
-.clearfix {
+#webfilez .clearfix {
   display: inline-block;
 }
  
@@ -88,7 +160,7 @@ html[xmlns] .clearfix {
   height: 1%;
 }
 
-.clear {
+#webfilez .clear {
   clear: both;
   display: block;
   height: 1px;
@@ -99,22 +171,26 @@ html[xmlns] .clearfix {
   MAIN
 \*------------------------------------*/
 
-body {
+#webfilez {
+  display: block;
   font-family: Helvetica, sans-serif;
   font-size: 16px;
   overflow: hidden;
+  line-height:1;
+  border: 4px solid #666;  
+  height: 400px;
 }
 
 /* ===== Layout ====== */
 
-body > header {
+#webfilez > header {
   background-color: #333;
   color: #FFF;
   padding: 5px;
   border-bottom: 1px solid #000;
 }
 
-body > footer {
+#webfilez > footer {
   display: none;
   height: 0;
   background-color: #333;
@@ -124,60 +200,56 @@ body > footer {
   font-size: 0.9em;
 }
 
-body > header a,
-body > footer a {
+#webfilez > header a,
+#webfilez > footer a {
   color: #FFF;
 }
 
-#main {
-  clear: both;
-}
-
-#main > #uploader {
+#webfilez > #uploader {
   float: left;
   width: 300px;
   background-color: #F2F2F2;
   box-shadow: 5px 1px 5px #888;
 }
 
-#main > #filemgr {
+#webfilez > #filemgr {
   float: none;
   margin-left: 320px
 }
 
 /* ==== Uploader ==== */
-#uploader #current_upload {
+#webfilez #uploader #current_upload {
   background-color: #CCC;
   margin: 8px;
   padding: 5px;
 }
 
-#uploader #current_upload #current_upload_status {
+#webfilez #uploader #current_upload #current_upload_status {
   margin: 4px;
   display: block;
 }
 
-#uploader #current_upload #upload_start {
+#webfilez #uploader #current_upload #upload_start {
   float: right;
 }
 
-#uploader #queue_status {
+#webfilez #uploader #queue_status {
   margin: 8px;
   padding: 5px;
 }
 
-#uploader #upload_queue {
+#webfilez #uploader #upload_queue {
   margin: 8px;
   overflow-y: scroll;
 }
 
-#uploader #upload_queue.nofiles {
+#webfilez #uploader #upload_queue.nofiles {
   background-image: url('../img/dragdropmsg.png');
   background-position: center center;
   background-repeat: no-repeat;
 }
 
-#uploader #file_button_form {
+#webfilez #uploader #file_button_form {
   margin: 8px;
   padding: 4px 0;
   position: relative;
@@ -186,14 +258,14 @@ body > footer a {
   text-align: center;
 }
 
-#uploader #file_button_form > label {
+#webfilez #uploader #file_button_form > label {
   position: relative;
   z-index: 1;
   width: 100%;
   text-align: center;
 }
 
-#uploader #file_button_form > input {
+#webfilez #uploader #file_button_form > input {
   opacity: 0;
   z-index: 3;
   position: absolute;
@@ -204,7 +276,7 @@ body > footer a {
 }
 
 
-#filemgr {
+#webfilez #filemgr {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
@@ -212,21 +284,21 @@ body > footer a {
   position: relative;
 }
 
-#filemgr .breadcrumbpanel {
+#webfilez #filemgr .breadcrumbpanel {
   display: block;
   width: 98%;
   margin: 0 auto;
   padding: 0;
 }
 
-#filemgr .breadcrumbsection {
+#webfilez #filemgr .breadcrumbsection {
   margin: 10px;
   background-color: #CCC;
   padding: 10px 15px 3px 15px;
   border-radius: 10px;
 }
 
-#filemgr .breadcrumbsection > #mkdir {
+#webfilez #filemgr .breadcrumbsection > #mkdir {
   float: right;
   background-color: #444;
   color: #FFF;
@@ -236,36 +308,36 @@ body > footer a {
   font-size: 0.9em;
 }
 
-#filemgr .breadcrumbsection > #mkdir:hover {
+#webfilez #filemgr .breadcrumbsection > #mkdir:hover {
   background-color: #222;
 }
 
-#filemgr .breadcrumbsection > #mkdir:active {
+#webfilez #filemgr .breadcrumbsection > #mkdir:active {
   background-color: #101010;
 }
 
-#filemgr #breadcrumbs > li {
+#webfilez #filemgr #breadcrumbs > li {
   display: block;
   float: left;
 }
 
-#filemgr #breadcrumbs > li a {
+#webfilez #filemgr #breadcrumbs > li a {
   display: block;
   text-decoration: none;
   color: #000;
 }
 
-#filemgr #breadcrumbs > li a:hover {
+#webfilez #filemgr #breadcrumbs > li a:hover {
   text-decoration: underline;
 }
 
-#filemgr #breadcrumbs > li.sep {
+#webfilez #filemgr #breadcrumbs > li.sep {
   font-weight: bold;
   font-size: 1.2em;
   margin: 0 8px;
 }
 
-#filemgr #filelist.icons > li {
+#webfilez #filemgr #filelist.icons > li {
   float: left;
   margin: 10px;
   padding-top: 34px;
@@ -276,15 +348,15 @@ body > footer a {
   font-size: 0.8em;
 }
 
-#filemgr #filelist.icons li.file {
+#webfilez #filemgr #filelist.icons li.file {
     background-image: url('../img/file_32x32.png');
 }
 
-#filemgr #filelist.icons li.dir {
+#webfilez #filemgr #filelist.icons li.dir {
     background-image: url('../img/folder_32x32.png');
 }
 
-#filemgr #filelist.list > li {
+#webfilez #filemgr #filelist.list > li {
   float: left;
   margin: 10px;
   padding-left: 20px;
@@ -294,15 +366,15 @@ body > footer a {
   font-size: 1em;
 }
 
-#filemgr #filelist.list > li.file {
+#webfilez #filemgr #filelist.list > li.file {
   background-image: url('../img/file_16x16.png');
 } 
 
-#filemgr #filelist.list li.dir {
+#webfilez #filemgr #filelist.list li.dir {
     background-image: url('../img/folder_16x16.png');
 }
 
-#filemgr #filedetails {
+#webfilez #filemgr #filedetails {
   margin: 20px 30px 10px 30px;
   width: 45%;
   border: 3px solid #111;
@@ -314,7 +386,7 @@ body > footer a {
   right: 0;
 }
 
-#filemgr #filedetails .filedetailsclose {
+#webfilez #filemgr #filedetails .filedetailsclose {
   cursor: pointer;
   float: right;
   padding: 4px;
@@ -322,12 +394,12 @@ body > footer a {
   border-radius: 4px;
 }
 
-#filemgr #filedetails .filedetailsclose:hover {
+#webfilez #filemgr #filedetails .filedetailsclose:hover {
   background-color: #990000;
   color: #FFF;
 }
 
-#filemgr #filedetails a {
+#webfilez #filemgr #filedetails a {
   background-color: #444;
   color: #FFF;
   display: block;
@@ -338,11 +410,11 @@ body > footer a {
   border-radius: 10px;
 }
 
-#filemgr #filedetails a:hover {
+#webfilez #filemgr #filedetails a:hover {
   background-color: #222;
 }
 
-#filemgr #filedetails a:active {
+#webfilez #filemgr #filedetails a:active {
   background-color: #101010;
 }
 

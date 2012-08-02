@@ -8,7 +8,6 @@
 function interface_check_required_elements() {
  
   var required_elements = new Array(
-    'main',
     'filemgr',
     'uploader',
     'current_upload_filename',

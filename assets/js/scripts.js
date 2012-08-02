@@ -79,14 +79,13 @@ function setup_layout() {
   var containerheight = windowheight - minusheight;
   
   //Set the file manager and the container height to the correct px
-  $('body > #main').height(containerheight);
-  $('body > #main > #filemgr').height(containerheight);
-  $('body > #main > #uploader').height(containerheight);
+  $('#webfilez #filemgr').height(containerheight);
+  $('#webfilez #uploader').height(containerheight);
   
   //Set the upload queue to the correct height
   var uploader_height = containerheight;
-  uploader_height = uploader_height - ($('#main > #uploader #upload_queue').siblings().outerHeight() + 90);
-  $('body > #main > #uploader #upload_queue').height(uploader_height);
+  uploader_height = uploader_height - ($('#webfilez #upload_queue').siblings().outerHeight() + 90);
+  $('#webfilez #uploader #upload_queue').height(uploader_height);
 }
 
 // -----------------------------------------------------------------------------
