@@ -14,11 +14,9 @@ $(document).ready(function() {
   /*
    * Initial Setup
    */
-  interface_check_required_elements();
   setup_layout();
   initialize_queue();
   initialize_filemgr();
-  
   
   /*
    * Event handlers
@@ -72,11 +70,9 @@ $(document).ready(function() {
 function setup_layout() {
   
   //Calculate the height of the main container and resize it
-  var windowheight = $(window).height();
+  var webfilezheight = $('#webfilez').height();
   var minusheight = 1; //extra px
-  minusheight += $('body > header').outerHeight();
-  minusheight += $('body > footer').height();
-  var containerheight = windowheight - minusheight;
+  var containerheight = webfilezheight - minusheight;
   
   //Set the file manager and the container height to the correct px
   $('#webfilez #filemgr').height(containerheight);

@@ -88,6 +88,10 @@ function queue_shift() {
   
   //Update the window
   update_queue_status_txt();
+  if ($('#upload_queue').children('li').length == 0) {
+    $('#upload_queue').addClass('nofiles');
+  }
+
   return {'fileobject': arritem, 'key': key};
 }
 
