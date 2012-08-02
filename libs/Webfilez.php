@@ -62,7 +62,7 @@ class Webfilez {
      */
     public static function embed($webfilezUrl = null) {
         $that = new Webfilez();
-        $output = $that->loadInterface(false);
+        $output = $that->loadInterface(false, $webfilezUrl);
         return $output;
     }
 
@@ -81,6 +81,9 @@ class Webfilez {
 
         //Error Manager
         Reqresp\ErrorWrapper::invoke();
+
+        //Libraries
+        $this->loadLibraries();        
     }
 
     // ------------------------------------------------------------------------
@@ -92,8 +95,6 @@ class Webfilez {
     {        
         //Route It!
         try {
-
-            $this->loadLibraries();
 
             $this->route();
             $this->response->go();
@@ -382,7 +383,7 @@ class Webfilez {
     {
         //Variables
         $templateVars = array();
-        $templateVars['baseurl']     = rtrim($baseurl ?: $this->url->baseurl, '/');
+        $templateVars['baseurl']     = rtrim(($baseurl ?: $this->url->baseurl), '/');
         $templateVars['currentpath'] = ($baseurl) ? '' : $this->url->path;
         $templateVars['currenttype'] = is_dir($this->fileMgr->resolveRealPath($templateVars['currentpath'])) ? 'dir' : 'file';
 
