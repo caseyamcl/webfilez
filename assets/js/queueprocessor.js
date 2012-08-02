@@ -42,14 +42,35 @@ function queue_process() {
         queue_do_progress(queue_item.key);
       },
       success: function(data){
-        console.log("Uploaded..." + data);
+        debug("Uploaded..." + data);
         queue_clear_current_upload_key();
         filemgr_get_file_list();
       },
-      error: function(jqXHR, errortext) {
-        console.log(jqXHR);
-        console.log(errortext);
+      error: function(jqXHR, textStatus, errorThrown) {
+        debug(jqXHR);
+        debug(textStatus);
+
         queue_clear_current_upload_key();
+
+        /*if (errorThrown == 'Conflict') {
+          $.prompt(
+            queue_item.fileobject.name + ' already exists.  Overwrite?', {
+            buttons: { 'Overwrite': 1, 'Skip': 2 },
+            callback: function(e,v,m,f) {
+              switch(v) {
+                case 1:
+                  //queue_item.fileobject.overwrite = true;
+                  queue_prepend(queue_item.fileobject);
+                  debug("Chose overwrite; Re-uploading with overwrite flag");
+                break;
+                case 2:
+                  queue_clear_current_upload_key();
+                  debug("Chose skip; skipping file");
+                break;
+              }
+            }
+          });
+        }*/
       },
       complete: function(jqXHR, textStatus) {
         

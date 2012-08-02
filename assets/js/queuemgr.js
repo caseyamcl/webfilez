@@ -93,17 +93,28 @@ function queue_shift() {
 
 // -----------------------------------------------------------------------------
 
+function queue_append(file_object) {
+  queue_add(file_object, 'append');
+}
+
+// -----------------------------------------------------------------------------
+
+function queue_prepend(file_object) {
+  queue_add(file_object, 'prepend');
+}
+
+// -----------------------------------------------------------------------------
+
 /**
  * Append item to the queue
  */
-function queue_append(file_object) {
+function queue_add(file_object, prepOrApp) {
 
   //Get the md5
   var key = hex_md5(serialize(file_object));
 
-  //@TODO: Make this more user-friendly
   if (queue_items[key] != undefined) {
-    console.log(file_object.name + " is already queued for upload");
+    debug(file_object.name + " is already queued for upload");
     return;
   }
 
@@ -114,7 +125,14 @@ function queue_append(file_object) {
   debug("Added new item with key: " + key);
     
   //Add the item to the <li> queue
-  $('#upload_queue').append("<li title='"+ key +"'>" + file_object.name + "</li>")
+  var toAdd = "<li title='"+ key +"'>" + file_object.name + "</li>";
+
+  if (prepOrApp == 'prepend') {
+    $('#upload_queue').prepend(toAdd);
+  }
+  else {
+    $('#upload_queue').append(toAdd);
+  }
   $('#upload_queue').removeClass('nofiles');
   update_queue_status_txt();
 }
