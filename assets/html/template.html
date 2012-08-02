@@ -30,73 +30,59 @@
    *  {currenttype} -- Current path item type ('file' or 'dir')
    */ 
 ?>
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8"/>
-  <title>Webfilez</title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-  <link rel="stylesheet" href="{baseurl}/assets/css/main.css" />
-</head>
-
-<body>
-  <div id='webfilez' class='{currenttype}'> 
-    <section id="uploader">
-      
-      <div id="current_upload">
-        <span id="current_upload_filename" style="display: none;">No Uploads in Progress</span>
-        <span id="current_upload_status">No Uploads in Progress</span>
-        <button id="upload_start">Go</button>
-        <br class='clear' />
-      </div>
-
-      <p id="queue_status">
-        No file queued
-      </p>
-
-      <form id='file_button_form'>
-        <label for='file_add_button'>Add Files</label>
-        <input id='file_add_button' type='file' name="add_file" multiple="multiple" />
-      </form>
-      
-      <ol id="upload_queue" class='nofiles'>
-      </ol>
-      
-    </section>
+<div id='webfilez' class='{currenttype}'> 
+  <section id="uploader">
     
-    <section id="filemgr">
+    <div id="current_upload">
+      <span id="current_upload_filename" style="display: none;">No Uploads in Progress</span>
+      <span id="current_upload_status">No Uploads in Progress</span>
+      <button id="upload_start">Go</button>
+      <br class='clear' />
+    </div>
 
-      <div class='breadcrumbpanel'>
-        <div class='breadcrumbsection'>
-          <ul id='breadcrumbs' class='clearfix'>
-            <li class='home'><a href='{baseurl}' title='Home (root folder)'>Home</a></li>
-          </ul>
-          <span id='mkdir'>Add Folder</span>
-        </div>
-      </div>
+    <p id="queue_status">
+      No file queued
+    </p>
 
-      <ul id='filelist' class='icons' style='display: none;'><li class='loading'>Loading...</li></ul>
-      <div id='filedetails' style='display: none;'>No File Loaded</div>
-    </section>
-
-
-  </div>
+    <form id='file_button_form'>
+      <label for='file_add_button'>Add Files</label>
+      <input id='file_add_button' type='file' name="add_file" multiple="multiple" />
+    </form>
     
-  <script>
-    server_url   = '{baseurl}/';
-    current_path = '{currentpath}';
-    current_type = '{currenttype}';
-  </script>
-  <script src="{baseurl}/assets/js/sprintf.js"></script>
-  <script src="{baseurl}/assets/js/md5.js"></script>
-  <script src="{baseurl}/assets/js/jquery.js"></script>
-  <script src="{baseurl}/assets/js/impromptu.js"></script>
-  <script src="{baseurl}/assets/js/interface.js"></script>
-  <script src="{baseurl}/assets/js/queuemgr.js"></script>
-  <script src="{baseurl}/assets/js/queueprocessor.js"></script>
-  <script src="{baseurl}/assets/js/filemgr.js"></script>
-  <script src="{baseurl}/assets/js/scripts.js"></script>
-</body>
+    <ol id="upload_queue" class='nofiles'>
+    </ol>
+    
+  </section>
+  
+  <section id="filemgr">
 
-</html>
+    <div class='breadcrumbpanel'>
+      <div class='breadcrumbsection'>
+        <ul id='breadcrumbs' class='clearfix'>
+          <li class='home'><a href='{baseurl}' title='Home (root folder)'>Home</a></li>
+        </ul>
+        <span id='mkdir'>Add Folder</span>
+      </div>
+    </div>
+
+    <ul id='filelist' class='icons' style='display: none;'><li class='loading'>Loading...</li></ul>
+    <div id='filedetails' style='display: none;'>No File Loaded</div>
+  </section>
+
+
+    <script>
+      server_url   = '{baseurl}/';
+      current_path = '{currentpath}';
+      current_type = '{currenttype}';
+    </script>
+    <script src="{baseurl}/assets/js/sprintf.js"></script>
+    <script src="{baseurl}/assets/js/md5.js"></script>
+    <script src="{baseurl}/assets/js/jquery.js"></script>
+    <script src="{baseurl}/assets/js/impromptu.js"></script>
+    <script src="{baseurl}/assets/js/queuemgr.js"></script>
+    <script src="{baseurl}/assets/js/queueprocessor.js"></script>
+    <script src="{baseurl}/assets/js/filemgr.js"></script>
+    <script src="{baseurl}/assets/js/scripts.js"></script>
+
+</div>

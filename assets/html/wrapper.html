@@ -1,0 +1,31 @@
+<?php
+  /* WebFilez Wrapper
+   *
+   * Note: This file is not a script file; it is a template file.
+   * Anything between <? ... tags will actually be ignored, and
+   * is here for documentation purposes only
+   *
+   * A standard HTML wrapper, with the following template tag, expected
+   * somwhere in the <body>...</body> tags.
+   *  {webfilez}
+   *
+   * Other available template tags
+   *  {baseurl}
+   *  {currentpath} -- Current path
+   *  {currenttype} -- Current path item type ('file' or 'dir')   
+   */ 
+?>
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Webfilez</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <link rel="stylesheet" href="{baseurl}/assets/css/main.css" />
+</head>
+
+<body>
+    {webfilez}
+</body>
+</html>

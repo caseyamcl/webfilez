@@ -7,7 +7,7 @@ function queue_process() {
   //Get the next item in the queue.  If FALSE, then stop processing the queue
   if (get_queue_state() != 'cancelling') {
     set_queue_state('processing');
-    interface_hide('upload_start');
+    $('upload_start').hide();
   }
    
   var queue_item = queue_shift();
@@ -32,8 +32,8 @@ function queue_process() {
         jqXHR.setRequestHeader("UploadFileId", queue_item.key);
 
         //Show a message
-        interface_show('current_upload_filename');
-        interface_update_content('current_upload_filename', 'Uploading ' + queue_item.fileobject.name);
+        $('#current_upload_filename').show();
+        $('#current_upload_filename').html('Uploading ' + queue_item.fileobject.name);
         
         //Set a flag to indicate the current uploading file
         queue_set_current_upload_key(queue_item.key);
@@ -75,8 +75,8 @@ function queue_process() {
       complete: function(jqXHR, textStatus) {
         
         //Revert message
-        interface_update_content('current_upload_filename', 'No Uploads in Progress');
-        interface_hide('current_upload_filename');
+        $('#current_upload_filename').html('No Uploads in Progress');
+        $('#current_upload_filename').hide();
         
         //Recursive callback
         queue_process();
@@ -86,7 +86,7 @@ function queue_process() {
   }
   else {
     set_queue_state('ready');
-    interface_show('upload_start');
+    $('#upload_start').show();
   }
 }
 

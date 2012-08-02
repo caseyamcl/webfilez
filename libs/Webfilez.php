@@ -53,6 +53,23 @@ class Webfilez {
     }
     
     // ------------------------------------------------------------------------
+
+    /**
+     * Embed the Webfilez Interface in another site
+     */
+    public static function embed($webfilezUrl = null, $echo = false) {
+        $that = new Webfilez();
+        $output = $that->loadInterface(false);
+
+        if ($echo) {
+            echo $output;
+        }
+        else {
+            return $output;
+        }
+    }
+
+    // ------------------------------------------------------------------------
     
     /**
      * Constructor
@@ -348,12 +365,14 @@ class Webfilez {
         }
     }
 
+    // ------------------------------------------------------------------------
+    
     /**
      * Load the interface HTML to download to a browser
      *
      * @return string
      */
-    private function loadInterface()
+    private function loadInterface($wrapper = true)
     {
         //Variables
         $templateVars = array(
@@ -362,15 +381,36 @@ class Webfilez {
             'currenttype' => is_dir($this->fileMgr->resolveRealPath($this->url->path)) ? 'dir' : 'file'
         );
 
-        //Do the output
         $ds = DIRECTORY_SEPARATOR;
-        $html =  file_get_contents(BASEPATH . "..{$ds}assets{$ds}html{$ds}template.html");
-        foreach ($templateVars as $search => $repl) {
-            $html = str_replace('{' . $search . '}', $repl, $html);
-        }
 
-        //Replace anything between <? tags 
-        $html = preg_replace("/<\?(.+?)\?>(\n+)?/s", '', $html);
+        $clean = function($str, $templateVars) {
+
+            //Remove anything between <? tags 
+            $str = preg_replace("/<\?(.+?)\?>(\n+)?/s", '', $str);
+
+            //Template vars
+            foreach ($templateVars as $search => $repl) {
+                $str = str_replace('{' . $search . '}', $repl, $str);
+            }
+            return $str; 
+
+        };
+
+        //Do the template output
+        $html = $clean(
+            file_get_contents(BASEPATH . "..{$ds}assets{$ds}html{$ds}template.html"),
+            $templateVars
+        );
+
+        //If wrapper, do the wrapper output
+        if ($wrapper) {
+          $templateVars['webfilez'] = $html;
+          
+          $html = $clean(
+              file_get_contents(BASEPATH . "..{$ds}assets{$ds}html{$ds}wrapper.html"),
+              $templateVars
+          );
+        }
         return $html;
     }
 
