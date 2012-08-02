@@ -8,7 +8,7 @@
 
 //Require
 $ds = DIRECTORY_SEPARATOR;
-require(__DIR__ . $ds . 'libs' . $ds . 'Webfilez.php');
+require_once(__DIR__ . $ds . 'libs' . $ds . 'Webfilez.php');
 
 //Go!
 Webfilez::main();

@@ -45,7 +45,7 @@ class Webfilez {
     // ------------------------------------------------------------------------
     
     /**
-     * JFile Main Exeuction Runner 
+     * Webfilez Main Exeuction Runner 
      */
     public static function main() {
         $that = new Webfilez();
@@ -56,17 +56,14 @@ class Webfilez {
 
     /**
      * Embed the Webfilez Interface in another site
+     *
+     * @param string $webfilezUrl
+     * The URL for Webfilez
      */
-    public static function embed($webfilezUrl = null, $echo = false) {
+    public static function embed($webfilezUrl = null) {
         $that = new Webfilez();
         $output = $that->loadInterface(false);
-
-        if ($echo) {
-            echo $output;
-        }
-        else {
-            return $output;
-        }
+        return $output;
     }
 
     // ------------------------------------------------------------------------
@@ -74,7 +71,7 @@ class Webfilez {
     /**
      * Constructor
      */
-    private function __construct() {
+    public function __construct() {
 
         //Basepath
         define('BASEPATH' , __DIR__ . DIRECTORY_SEPARATOR);
@@ -128,15 +125,14 @@ class Webfilez {
     private function loadLibraries()
     {
         //First Tier
-        $configdir = BASEPATH . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR;
-        $this->config = new Configula\Config($configdir);
-
-        $this->request = new Reqresp\Request();
-        $this->response =  new Reqresp\Response();
-        $this->url = new Reqresp\Uri();
+        $configdir      = BASEPATH . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR;
+        $this->config   = new Configula\Config($configdir);
+        $this->request  = new Reqresp\Request();
+        $this->response = new Reqresp\Response();
+        $this->url      = new Reqresp\Uri();
 
         //Second Tier
-        $this->fileMgr = new FileManager($this->getFolder(), array(), (boolean) $this->config->autobuild);
+        $this->fileMgr       = new FileManager($this->getFolder(), array(), (boolean) $this->config->autobuild);
         $this->uploadHandler = new UploadHandler($this->fileMgr, $this->config->slow);
     }
 
@@ -146,6 +142,7 @@ class Webfilez {
      * Callback to get the folder
      *
      * @return string
+     * A path to the folder to use
      */
     private function getFolder()
     {
@@ -210,36 +207,36 @@ class Webfilez {
 
                 if ($this->request->header('IsDir') ?: $this->url->query('isDir')) {
 
-                  try {
-                      $result = $this->fileMgr->putDir($path);  
-                  }
-                  catch (FileManagerIOException $e) {
-                      $result = false;
-                  }
+                    try {
+                        $result = $this->fileMgr->putDir($path);  
+                    }
+                    catch (FileManagerIOException $e) {
+                        $result = false;
+                    }
 
-                  if ($result) {
-                    $this->response->setStatus(201);
-                    $this->response->setBody(json_encode(array('created' => $path)));
-                  }
-                  else {
-                    $this->response->setStatus(500);
-                    $this->response->setBody(json_encode(array('msg' => $e->getMessage())));
-                  }
+                    if ($result) {
+                        $this->response->setStatus(201);
+                        $this->response->setBody(json_encode(array('created' => $path)));
+                    }
+                    else {
+                        $this->response->setStatus(500);
+                        $this->response->setBody(json_encode(array('msg' => $e->getMessage())));
+                    }
 
                 }
                 else { //is file...
 
-                  //Determine upload ID - Try header first, then query array
-                  $fileUploadID = $this->request->header('Uploadfileid') ?: $this->url->query('id');
+                    //Determine upload ID - Try header first, then query array
+                    $fileUploadID = $this->request->header('Uploadfileid') ?: $this->url->query('id');
 
-                  if ( ! $exists OR ($this->request->header('Overwrite') ?: $this->url->query('overwrite'))) {
-                      $output = $this->uploadHandler->processUpload($path, $_SERVER['CONTENT_LENGTH'], $fileUploadID);
-                      $this->response->setBody(json_encode($output));
-                  }
-                  else {
-                      $this->response->setStatus(409);
-                      $this->response->setBody(json_encode(array('msg' => 'File already exists')));
-                  }
+                    if ( ! $exists OR ($this->request->header('Overwrite') ?: $this->url->query('overwrite'))) {
+                        $output = $this->uploadHandler->processUpload($path, $_SERVER['CONTENT_LENGTH'], $fileUploadID);
+                        $this->response->setBody(json_encode($output));
+                    }
+                    else {
+                        $this->response->setStatus(409);
+                        $this->response->setBody(json_encode(array('msg' => 'File already exists')));
+                    }
                 }
 
             break;
@@ -292,6 +289,9 @@ class Webfilez {
 
     // ------------------------------------------------------------------------
 
+    /**
+     * Route GET requests for Files and Directories
+     */
     private function routeGetFile($path, $realpath, $exists, $isDir) {
 
         //Stream the file
@@ -370,19 +370,25 @@ class Webfilez {
     /**
      * Load the interface HTML to download to a browser
      *
+     * @param boolean $wrapper
+     * Include the wrapper HTML code?
+     *
+     * @param string $baseurl
+     * BaseURL (blank for current URL; only use this for embedding)
+     *
      * @return string
      */
-    private function loadInterface($wrapper = true)
+    private function loadInterface($wrapper = true, $baseurl = null)
     {
         //Variables
-        $templateVars = array(
-            'baseurl'     => rtrim($this->url->baseurl, '/'),
-            'currentpath' => $this->url->path,
-            'currenttype' => is_dir($this->fileMgr->resolveRealPath($this->url->path)) ? 'dir' : 'file'
-        );
+        $templateVars = array();
+        $templateVars['baseurl']     = rtrim($baseurl ?: $this->url->baseurl, '/');
+        $templateVars['currentpath'] = ($baseurl) ? '' : $this->url->path;
+        $templateVars['currenttype'] = is_dir($this->fileMgr->resolveRealPath($templateVars['currentpath'])) ? 'dir' : 'file';
 
         $ds = DIRECTORY_SEPARATOR;
 
+        //Setup a clean function
         $clean = function($str, $templateVars) {
 
             //Remove anything between <? tags 
@@ -392,8 +398,7 @@ class Webfilez {
             foreach ($templateVars as $search => $repl) {
                 $str = str_replace('{' . $search . '}', $repl, $str);
             }
-            return $str; 
-
+            return $str;
         };
 
         //Do the template output
@@ -405,7 +410,7 @@ class Webfilez {
         //If wrapper, do the wrapper output
         if ($wrapper) {
           $templateVars['webfilez'] = $html;
-          
+
           $html = $clean(
               file_get_contents(BASEPATH . "..{$ds}assets{$ds}html{$ds}wrapper.html"),
               $templateVars
@@ -450,7 +455,6 @@ class Webfilez {
                 return;
             }
         }
-
     }
 
     // ------------------------------------------------------------------------
