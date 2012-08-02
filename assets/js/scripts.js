@@ -44,6 +44,12 @@ $(document).ready(function() {
   $("#filemgr #filelist").on('click', 'li.file > a', filemgr_view_file);
   $('#filemgr').on('click', '#filedetails .filedetailsclose', filemgr_close_file);
 
+  //click on a folder link in the manager
+  $('#filemgr').on('click', 'li.dir > a', filemgr_open_dir);
+
+  //click on a folder link in the breadcrumbs
+  $('#filemgr').on('click', '#breadcrumbs li > a', filemgr_open_dir);
+
   //Click on delete link
   $('#filemgr').on('click', '.delete_link', filemgr_delete_file);
 

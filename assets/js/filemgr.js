@@ -2,10 +2,14 @@
 /**
  * @TOOD: Flesh this out better!
  */
-function filemgr_get_file_list() {
+function filemgr_get_file_list(theUrl) {
+
+    if (typeof theUrl == 'undefined') {
+        theUrl = server_url + current_path;
+    }
 
     $.ajax({
-        url: server_url + current_path,
+        url: theUrl,
         type: 'GET',
         dataType: 'json',
         success: function(data) {
@@ -44,7 +48,7 @@ function filemgr_get_file_details(additionalPath) {
             html = "<span class='filedetailsclose'>X</span>"
             html = html + "<h3 class='filename'>" + data.relpath + "</h3>";
             html = html + "<p class='filesize'>" + data.size + " bytes</p>";
-            html = html + "<a href='" + server_url + data.relpath +"?contents=true' title='View/Download File' class='filestream'>View/Download</span>";
+            html = html + "<a href='" + server_url + data.relpath +"?contents=true' target='_blank' title='View/Download File' class='filestream'>View/Download</span>";
             html = html + "<a href='" + server_url + data.relpath +"' class='delete_link' title='Delete File'>Delete</span>";
 
             $('#filemgr #filedetails').html(html);
@@ -73,8 +77,13 @@ function filemgr_delete_file(e) {
 
 }
 
-function build_breadcrumbs() {
-    var sections = current_path.split('/').clean();
+function filemgr_build_breadcrumbs(thePath) {
+
+    if (typeof thePath == 'undefined') {
+        thePath = current_path;
+    }
+
+    var sections = thePath.split('/').clean();
     var first = $('#breadcrumbs > li.home').html();
 
     var output = sprintf("<li class='home'><a href='%s' title='Home'>Home</a></li>", server_url);
@@ -151,6 +160,18 @@ function filemgr_add_dir(dirname) {
     }
 }
 
+function filemgr_open_dir(e) {
+    e.preventDefault();
+    var fullUrl = $(this).attr('href');
+    var thePath = fullUrl.substr(server_url.length);
+
+    filemgr_get_file_list(fullUrl);
+    filemgr_build_breadcrumbs(thePath);
+
+    //Update global
+    current_path = thePath;
+}
+
 function filemgr_view_file(e) {
     e.preventDefault();
     filemgr_get_file_details($(this).parent('li').attr('title'));
@@ -169,7 +190,7 @@ function initialize_filemgr() {
       filemgr_get_file_details();
     }
 
-    build_breadcrumbs();
+    filemgr_build_breadcrumbs();
 }
 
 /* EOF: filemgr.js */

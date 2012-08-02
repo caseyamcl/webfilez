@@ -16,7 +16,9 @@ function queue_process() {
     
     //Get the upload path from the currpath global combined
     //with the filename
-    upload_path = currpath + queue_item.fileobject.name;
+    upload_path = current_path + '/' + queue_item.fileobject.name;
+
+    debug('Upload to:' + upload_path);
 
     //Upload the file    
     $.ajax({
