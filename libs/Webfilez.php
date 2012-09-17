@@ -45,15 +45,18 @@ class Webfilez {
     /**
      * @var string
      */
-    private $folder;
+    private $folderName;
 
     // ------------------------------------------------------------------------
 
     /**
      * Webfilez Main Exeuction Runner
+     *
+     * @param string $folderName
+     * Optionally pass in the folder to use (required for session strategy - see config)
      */
-    public static function main($folderPath = null) {
-        $that = new Webfilez($folderPath);
+    public static function main($folderName = null) {
+        $that = new Webfilez($folderName);
         $that->run();
     }
 
@@ -64,9 +67,12 @@ class Webfilez {
      *
      * @param string $webfilezUrl
      * The URL for Webfilez
+     *
+     * @param string $folderName
+     * Optionally pass in the folder to use (required for session strategy - see config)
      */
-    public static function embed($webfilezUrl = null, $folderPath = null) {
-        $that = new Webfilez($folderPath);
+    public static function embed($webfilezUrl = null, $folderName = null) {
+        $that = new Webfilez($folderName);
         $output = $that->loadInterface(false, $webfilezUrl);
         return $output;
     }
@@ -76,10 +82,10 @@ class Webfilez {
     /**
      * Constructor
      *
-     * @param string|null $folderPath
-     * If null, the getFolder() method will be called
+     * @param string $folderName
+     * Optionally pass in the folder to use (required for session strategy - see config)
      */
-    public function __construct($folderPath = null) {
+    public function __construct($folderName = null) {
 
         //Basepath
         define('BASEPATH' , __DIR__ . DIRECTORY_SEPARATOR);
@@ -87,8 +93,7 @@ class Webfilez {
         //Autoloader
         spl_autoload_register(array($this, 'autoloader'), TRUE, TRUE);
 
-        //Folder
-        $this->folder = $folderPath;
+        $this->folderName = $folderName;
 
         //Libraries
         $this->loadLibraries();
@@ -151,20 +156,53 @@ class Webfilez {
     /**
      * Callback to get the folder
      *
+     * Simple strategy function to return the foldername
+     *
      * @return string
      * A path to the folder to use
      */
     private function getFolder()
     {
-        if ($this->folder) {
-            return $this->folder;
-        }
-        elseif ($this->config->foldercallbackfile) {
-            include_once($this->config->foldercallbackfile);
-            return call_user_func($this->config->foldercallback);
-        }
-        else {
-            throw new Exception("Folder Callback undefined!  Did you set it in the configuration?");
+        switch ($this->config->foldername_strategy) {
+
+            case 'callback':
+
+                //Return the folderName if it was passed in
+                if ($this->folderName) {
+                    return $this->folderName;
+                }
+
+                if ($this->config->foldercallbackfile) {
+                    include_once($this->config->foldercallbackfile);
+                }
+
+                if ( ! $this->config->foldercallback) {
+                    throw new Exception("Folder Callback undefined!  Did you set it in the configuration?");
+                }
+
+                return call_user_func($this->config->foldercallback);
+            break;
+
+            case 'session': default:
+
+                //Start a session if not already started
+                if (session_id() == '') {
+                    session_start();
+                }
+
+                //If webfilez was passed in
+                if ($this->folderName) {
+                    $_SESSION['webfilez_folder'] = $this->folderName;
+                }
+
+                if ( ! isset($_SESSION['webfilez_folder'])) {
+                    throw new Exception("Folder Callback undefined!  Did you not pass it into the Webfilez app?");
+                }
+
+                return $_SESSION['webfilez_folder'];
+
+            break;
+
         }
     }
 

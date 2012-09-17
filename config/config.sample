@@ -15,6 +15,28 @@
 $config['autobuild'] = true;
 
 /*
+ * Base URL
+ *
+ * Leave blank for default
+ *
+ * If embedding, this needs to be set manually
+ *
+ */
+$config['base_url'] = 'http://localhost:4567/webfilez/';
+
+/*
+ * Folder name retrieval strategy
+ *
+ * 'session' requires that the folderName be passed in
+ * when webfilez is loaded for the first time, and then it
+ * retains that information in the session
+ *
+ * 'callback' requires that a function be provided which will
+ * return the name of the folder to use
+ */
+$config['foldername_strategy'] = 'session';
+
+/*
  * Get Folder Callback
  *
  * 'foldercallback' is required and should return

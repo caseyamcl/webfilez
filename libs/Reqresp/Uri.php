@@ -192,19 +192,13 @@ class Uri
 
         //Set the request_uri
         $reqURI = explode('?', $serverData['REQUEST_URI'], 2);
-        $reqURI = array_shift($reqURI);
+        $reqURI = $this->reduceDoubleSlashes(array_shift($reqURI));
 
         //The query string
         $this->query = $serverData['QUERY_STRING'];
 
-        //Get the PATH.. Use PATH_INFO if possible
-        if (isset($serverData['PATH_INFO']) && ! empty($serverData['PATH_INFO'])) {
-            $pathinfo = explode('?', $serverData['PATH_INFO'], 2);
-            $pathinfo = array_shift($pathinfo);
-        }
-        else {
-            $pathinfo = substr($reqURI, strlen($this->basepath . $this->scriptname));
-        }
+        //Get the PATH
+        $pathinfo = substr($reqURI, strlen($this->basepath . $this->scriptname));
 
         $segments = array();
         if ( ! empty($pathinfo)) {

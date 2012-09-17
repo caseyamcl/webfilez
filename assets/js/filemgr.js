@@ -62,7 +62,7 @@ function filemgr_delete_file(e) {
 
     if (confirm("Really delete this file?") == false) {
         return;
-    } 
+    }
 
     //console.log("Will delete: " + $(this).attr('href'));
     $.ajax({
@@ -137,7 +137,7 @@ function filemgr_add_dir(dirname) {
 
     var matches = dirname.match(/^([a-z0-9 \.-_]+)$/i);
     if (matches && dirname.length < 255) {
-        
+
         var fullurl = server_url + current_path + dirname;
 
         $.ajax({
@@ -148,7 +148,9 @@ function filemgr_add_dir(dirname) {
                 jqXHR.setRequestHeader("IsDir", 1);
             },
             success: function(data) {
-                window.location = fullurl;
+                //window.location = fullurl;
+                filemgr_get_file_list(fullurl);
+                filemgr_build_breadcrumbs(current_path + dirname);
             }
         });
 
