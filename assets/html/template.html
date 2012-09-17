@@ -26,14 +26,15 @@
    *
    * Available Template Tags:
    *  {baseurl}     -- Base URL of the application
+   *  {siteurl}     -- Site URL of the application (includes index.php if no mod_rewrite)
    *  {currentpath} -- Current path
    *  {currenttype} -- Current path item type ('file' or 'dir')
-   */ 
+   */
 ?>
 
-<div id='webfilez' class='{currenttype}'> 
+<div id='webfilez' class='{currenttype}'>
   <section id="uploader">
-    
+
     <div id="current_upload">
       <span id="current_upload_filename" style="display: none;">No Uploads in Progress</span>
       <span id="current_upload_status">No Uploads in Progress</span>
@@ -49,12 +50,12 @@
       <label for='file_add_button'>Add Files</label>
       <input id='file_add_button' type='file' name="add_file" multiple="multiple" />
     </form>
-    
+
     <ol id="upload_queue" class='nofiles'>
     </ol>
-    
+
   </section>
-  
+
   <section id="filemgr">
 
     <div class='breadcrumbpanel'>
@@ -72,7 +73,7 @@
 
 
     <script>
-      server_url   = '{baseurl}/';
+      server_url   = '{siteurl}/';
       current_path = '{currentpath}';
       current_type = '{currenttype}';
     </script>

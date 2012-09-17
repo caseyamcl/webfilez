@@ -6,6 +6,13 @@
 
 // =============================================================================
 
+/**
+ * Embed Webfilez CSS
+ *
+ * Echos the CSS <link rel='...' /> HTML to output
+ *
+ * @param string $webfilezUrl
+ */
 function embedWebfilezCss($webfilezUrl) {
 
     $ds = DIRECTORY_SEPARATOR;
@@ -24,11 +31,19 @@ function embedWebfilezCss($webfilezUrl) {
 
 // -----------------------------------------------------------------------------
 
-function embedWebfilezHtml($webfilezUrl) {
+/**
+ * Embed Webfilez HTML
+ *
+ * Echos the HTML embed code to output
+ *
+ * @param string $webfilezUrl
+ * @param string|null $folder
+ */
+function embedWebfilezHtml($webfilezUrl, $folder = null) {
 
     $ds = DIRECTORY_SEPARATOR;
     require_once(__DIR__ . $ds . 'libs' . $ds . 'Webfilez.php');
-    echo Webfilez::embed($webfilezUrl);
+    echo Webfilez::embed($webfilezUrl, $folder);
 }
 
 /* EOF: embed.php */

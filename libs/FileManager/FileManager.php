@@ -1,6 +1,6 @@
 <?php
 
-class FileManagerIOException extends Exception 
+class FileManagerIOException extends Exception
 {
 	/* Pass */
 }
@@ -13,10 +13,10 @@ class FileManagerIOException extends Exception
  * @author Casey McLaughlin
  */
 class FileManager
-{  
+{
     const DATA = 1;
     const PATH = 2;
-  
+
     /**
      * @var The mode for writing files
      */
@@ -37,7 +37,7 @@ class FileManager
      */
     private $exts = array();
 
-    // ------------------------------------------------------------------------   
+    // ------------------------------------------------------------------------
 
     /**
      * Constructor
@@ -66,7 +66,7 @@ class FileManager
         $this->basepath = $this->normalizePath(realpath($path), false) . DIRECTORY_SEPARATOR;
         $this->exts = (array) $exts;
     }
-  
+
 	// ------------------------------------------------------------------------
 
     /**
@@ -165,27 +165,27 @@ class FileManager
 
         //Delete contents if specified
         if (! empty($contents) && $deleteContents) {
-            
+
             foreach($contents as $info) {
                 if (is_file($this->resolveRealPath($info->path)))
                     $this->deleteFile($info->path);
                 else
                     $this->deleteDir($info->path, true);
             }
-        } 
+        }
         elseif (! empty($contents)) {
             throw new FileManagerIOException("The directory '$dirPath' is not empty!");
         }
-        
+
         //Delete this directory
         return @rmdir($fullDirPath);
     }
-        
+
     // ------------------------------------------------------------------------
 
     /**
      * Put a file into the system
-     * 
+     *
      * @param string $filepath       (relative to the basepath)
      * @param string $dataOrPath     Data to write, filepath to copy from
      * @param boolean $overwrite     If true, will overwrite existing file
@@ -209,7 +209,7 @@ class FileManager
         //Exists without overwrite?
         if (file_exists($fullFilePath) && ! $overwrite) {
             throw new FileManagerIOException("The file '$filepath' already exists!");
-        } 
+        }
 
         switch($mode) {
 
@@ -238,7 +238,7 @@ class FileManager
 
         return $this->normalizePath($filepath);
     }
-    
+
 	// ------------------------------------------------------------------------
 
     /**
@@ -249,7 +249,7 @@ class FileManager
      * @param string $filepath         (relative to the basepath)
      * @return string
      */
-    public function getFile($filepath) 
+    public function getFile($filepath)
     {
         $fullFilePath = $this->resolveRealPath($filepath);
 
@@ -335,7 +335,7 @@ class FileManager
      * Will add a trailing slash if one does not exist, and will reduce
      * any double slashes
      *
-     * @param string $path 
+     * @param string $path
      * @param boolean $removeFrontSlash  If TRUE, will remove the beginning slash
      * @return string
      */

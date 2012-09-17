@@ -38,7 +38,7 @@ class Uri
      */
     protected $hostIP;
 
-    /** 
+    /**
      * @var string
      */
     protected $basepath;
@@ -94,12 +94,12 @@ class Uri
     {
         $this->init($serverData);
     }
-    
+
     // --------------------------------------------------------------
 
-    /** 
+    /**
      * Magic method to retrieve protected properties
-     */  
+     */
     public function __get($val) {
 
         return $this->$val;
@@ -161,14 +161,16 @@ class Uri
      * @param $serverData  Passed in from constructor
      */
     private function init($serverData = null)
-    {    
+    {
         //Use global most of the time
         if (is_null($serverData)) {
             $serverData = $_SERVER;
         }
-        
+
         //Get the protocol and port
-        $this->port     = $serverData['SERVER_PORT'];
+        $this->port     = (strpos($serverData['HTTP_HOST'], ':'))
+            ? end(explode(':', $serverData['HTTP_HOST']))
+            : $serverData['SERVER_PORT'];
         $this->protocol = ($this->port == 443 || ( ! empty($serverData['HTTPS']) && $serverData['HTTPS'] == 'on')) ? 'https' : 'http';
         $this->https    = ($this->protocol == 'https');
 
@@ -220,11 +222,11 @@ class Uri
 
         $this->baseurl = $this->reduceDoubleSlashes($this->protocol . '://' . $this->hostname . $port . '/' . $this->basepath . '/');
         $this->appurl = $this->reduceDoubleSlashes($this->baseurl . $this->scriptname . '/');
-     
+
         $this->currenturl = $this->reduceDoubleSlashes($this->appurl . '/' . $this->path);
         $this->fullurl    = ( ! empty($this->query)) ? $this->currenturl . '?' . $serverData['QUERY_STRING'] : $this->currenturl;
     }
-    
+
     // --------------------------------------------------------------
 
     /**

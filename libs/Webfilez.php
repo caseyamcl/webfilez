@@ -2,11 +2,11 @@
 
 class WebfilezNotAuthorizedException
 {
-    /* pass */
+        /* pass */
 }
-   
+
 // ------------------------------------------------------------------------
-   
+
 /**
  * Webfilez Main Execution Class
  */
@@ -36,22 +36,27 @@ class Webfilez {
      * @var UploadHandler
      */
     private $uploadHandler;
-  
+
     /**
      * @var array
      */
     private $mimeTypes;
 
-    // ------------------------------------------------------------------------
-    
     /**
-     * Webfilez Main Exeuction Runner 
+     * @var string
      */
-    public static function main() {
-        $that = new Webfilez();
+    private $folder;
+
+    // ------------------------------------------------------------------------
+
+    /**
+     * Webfilez Main Exeuction Runner
+     */
+    public static function main($folderPath = null) {
+        $that = new Webfilez($folderPath);
         $that->run();
     }
-    
+
     // ------------------------------------------------------------------------
 
     /**
@@ -60,42 +65,47 @@ class Webfilez {
      * @param string $webfilezUrl
      * The URL for Webfilez
      */
-    public static function embed($webfilezUrl = null) {
-        $that = new Webfilez();
+    public static function embed($webfilezUrl = null, $folderPath = null) {
+        $that = new Webfilez($folderPath);
         $output = $that->loadInterface(false, $webfilezUrl);
         return $output;
     }
 
     // ------------------------------------------------------------------------
-    
+
     /**
      * Constructor
+     *
+     * @param string|null $folderPath
+     * If null, the getFolder() method will be called
      */
-    public function __construct() {
+    public function __construct($folderPath = null) {
 
         //Basepath
         define('BASEPATH' , __DIR__ . DIRECTORY_SEPARATOR);
-        
+
         //Autoloader
         spl_autoload_register(array($this, 'autoloader'), TRUE, TRUE);
 
-        //Error Manager
-        Reqresp\ErrorWrapper::invoke();
+        //Folder
+        $this->folder = $folderPath;
 
         //Libraries
-        $this->loadLibraries();        
+        $this->loadLibraries();
     }
 
     // ------------------------------------------------------------------------
-    
+
     /**
      * JFile Main Execution Script
      */
     private function run()
-    {        
+    {
+        //Error Manager
+        Reqresp\ErrorWrapper::invoke();
+
         //Route It!
         try {
-
             $this->route();
             $this->response->go();
         }
@@ -110,7 +120,6 @@ class Webfilez {
             }
         }
         catch (Exception $e) {
-
             //Catch 500 errors here
             throw $e;
         }
@@ -147,15 +156,16 @@ class Webfilez {
      */
     private function getFolder()
     {
-        if ($this->config->foldercallbackfile) {
-            include_once($this->config->foldercallbackfile);
+        if ($this->folder) {
+            return $this->folder;
         }
-
-        if ( ! $this->config->foldercallback) {
+        elseif ($this->config->foldercallbackfile) {
+            include_once($this->config->foldercallbackfile);
+            return call_user_func($this->config->foldercallback);
+        }
+        else {
             throw new Exception("Folder Callback undefined!  Did you set it in the configuration?");
         }
-
-        return call_user_func($this->config->foldercallback);
     }
 
     // ------------------------------------------------------------------------
@@ -170,11 +180,11 @@ class Webfilez {
 
             //Attempt to set the headers to disallow caching for this type of request
             $this->response->setHeader("Cache-Control: no-cache, must-revalidate");
-            $this->response->setHeader("Expires: Mon, 26 Jul 1997 05:00:00 GMT");  
+            $this->response->setHeader("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
 
             //Get the data
             $respData = json_encode($this->uploadHandler->getUploadStatus($this->url->query('id')));
-            
+
             //Set the output
             $this->response->setBody($respData);
         }
@@ -209,7 +219,7 @@ class Webfilez {
                 if ($this->request->header('IsDir') ?: $this->url->query('isDir')) {
 
                     try {
-                        $result = $this->fileMgr->putDir($path);  
+                        $result = $this->fileMgr->putDir($path);
                     }
                     catch (FileManagerIOException $e) {
                         $result = false;
@@ -255,17 +265,17 @@ class Webfilez {
             break;
             case 'DELETE':
 
-              if ($exists && ! $isDir) {
-                  $fileInfo = $this->fileMgr->getFile($path);
-                  $result = $this->fileMgr->deleteFile($path);
-                  $this->response->setStatus(($result) ? '200' : '500');
-                  $fileInfo['deleted'] = (int) $result;
-                  $this->response->setBody(json_encode($fileInfo));
-              }
-              else {
-                  $this->response->setStatus(404);
-                  $this->response->setBody(json_encode(array('msg' => 'File not found')));                
-              }
+                if ($exists && ! $isDir) {
+                    $fileInfo = $this->fileMgr->getFile($path);
+                    $result = $this->fileMgr->deleteFile($path);
+                    $this->response->setStatus(($result) ? '200' : '500');
+                    $fileInfo['deleted'] = (int) $result;
+                    $this->response->setBody(json_encode($fileInfo));
+                }
+                else {
+                    $this->response->setStatus(404);
+                    $this->response->setBody(json_encode(array('msg' => 'File not found')));
+                }
 
             break;
             case 'GET': //GET will be the only method that supports HTML output
@@ -275,7 +285,7 @@ class Webfilez {
                     $ctype = $this->resolveMime(pathinfo($realpath, PATHINFO_EXTENSION)) ?: 'application/octet-stream';
 
                     $this->response->setHeader('Content-type: '. $ctype);
-                    $this->response->setBody($realpath, Reqresp\Response::FILEPATH);                    
+                    $this->response->setBody($realpath, Reqresp\Response::FILEPATH);
                 }
                 elseif ( ! $this->request->isAjax) {
                     $this->response->setBody($this->loadInterface());
@@ -295,21 +305,21 @@ class Webfilez {
      */
     private function routeGetFile($path, $realpath, $exists, $isDir) {
 
-        //Stream the file
-        if ($exists) {
+            //Stream the file
+            if ($exists) {
 
-            //Get the object
-            $theObj = ($isDir)
-                ? $this->fileMgr->getDir($path)
-                : $this->fileMgr->getFile($path);
+                //Get the object
+                $theObj = ($isDir)
+                    ? $this->fileMgr->getDir($path)
+                    : $this->fileMgr->getFile($path);
 
-            //Output it
-            $this->response->setBody(json_encode($theObj));
-        }
-        else { //Not exists
-            $this->response->setHeader(404);
-            $this->response->setBody(json_encode(array('msg' => 'File or folder not found')));
-        }
+                //Output it
+                $this->response->setBody(json_encode($theObj));
+            }
+            else { //Not exists
+                $this->response->setHeader(404);
+                $this->response->setBody(json_encode(array('msg' => 'File or folder not found')));
+            }
     }
 
     // ------------------------------------------------------------------------
@@ -321,17 +331,17 @@ class Webfilez {
      */
     private function routeServerConfig($item) {
 
-      $config = array('a' => 1, 'b' => 2);
-      if ($item == 'all') {
-          $this->response->setBody(json_encode($config));
-      }
-      elseif (isset($config[$item])) {
-          $this->response->setBody(json_encode(array($item => $config[$item])));
-      }
-      else {
-          $this->response->setHeader(404);
-          $this->response->setBody(json_encode(array('msg' => 'Configuration setting not found')));
-      }
+        $config = array('a' => 1, 'b' => 2);
+        if ($item == 'all') {
+            $this->response->setBody(json_encode($config));
+        }
+        elseif (isset($config[$item])) {
+            $this->response->setBody(json_encode(array($item => $config[$item])));
+        }
+        else {
+            $this->response->setHeader(404);
+            $this->response->setBody(json_encode(array('msg' => 'Configuration setting not found')));
+        }
     }
 
     // ------------------------------------------------------------------------
@@ -367,7 +377,7 @@ class Webfilez {
     }
 
     // ------------------------------------------------------------------------
-    
+
     /**
      * Load the interface HTML to download to a browser
      *
@@ -383,6 +393,7 @@ class Webfilez {
     {
         //Variables
         $templateVars = array();
+        $templateVars['siteurl']     = rtrim(($baseurl ?: $this->url->appurl), '/');
         $templateVars['baseurl']     = rtrim(($baseurl ?: $this->url->baseurl), '/');
         $templateVars['currentpath'] = ($baseurl) ? '' : $this->url->path;
         $templateVars['currenttype'] = is_dir($this->fileMgr->resolveRealPath($templateVars['currentpath'])) ? 'dir' : 'file';
@@ -392,7 +403,7 @@ class Webfilez {
         //Setup a clean function
         $clean = function($str, $templateVars) {
 
-            //Remove anything between <? tags 
+            //Remove anything between <? tags
             $str = preg_replace("/<\?(.+?)\?>(\n+)?/s", '', $str);
 
             //Template vars
@@ -410,18 +421,18 @@ class Webfilez {
 
         //If wrapper, do the wrapper output
         if ($wrapper) {
-          $templateVars['webfilez'] = $html;
+            $templateVars['webfilez'] = $html;
 
-          $html = $clean(
-              file_get_contents(BASEPATH . "..{$ds}assets{$ds}html{$ds}wrapper.html"),
-              $templateVars
-          );
+            $html = $clean(
+                file_get_contents(BASEPATH . "..{$ds}assets{$ds}html{$ds}wrapper.html"),
+                $templateVars
+            );
         }
         return $html;
     }
 
     // ------------------------------------------------------------------------
-    
+
     /**
      * PSR-0 Compliant Autoloader with hacks for non-PSR Compliant libraries
      *
